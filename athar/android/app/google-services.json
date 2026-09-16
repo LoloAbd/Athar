@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "988731721904",
+    "project_id": "athar-973cd",
+    "storage_bucket": "athar-973cd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988731721904:android:2abc42c6a2dff58ae35375",
+        "android_client_info": {
+          "package_name": "com.example.athar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "988731721904-7rb1s33r7veg1m71355bgndkc5c2snjk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwM9Qi1rUzzKCnqmgQzPJbuGOYNuShP0w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "988731721904-7rb1s33r7veg1m71355bgndkc5c2snjk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "988731721904-rhb65vr9qhme4r9gtti713ng7jc3ll87.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.athar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

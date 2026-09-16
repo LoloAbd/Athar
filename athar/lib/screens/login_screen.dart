@@ -1,0 +1,439 @@
+import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:athar/services/auth_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../widgets/shared_text.dart';
+import '../widgets/text_form_field.dart';
+import '../theme/app_colors.dart';
+
+class LoginPage extends StatefulWidget {
+  final Function(Locale) onLanguageChanged;
+
+  const LoginPage({super.key, required this.onLanguageChanged});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool isPasswordVisible = false;
+  bool _rememberMe = false;
+  bool _isLoading = false;
+  Future<void> _handleGoogleLogin() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final result = await _authService.signInWithGoogle(isSignUp: false);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (!mounted) return;
+
+    if (result.credential != null) {
+      // نجح تسجيل الدخول
+      Navigator.pushReplacementNamed(context, '/home');
+    } else if (result.accountNotFound) {
+      // ما في حساب بهذا الإيميل -> حوّله لصفحة إنشاء حساب
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? 'لا يوجد حساب بهذا البريد')),
+      );
+      Navigator.pushReplacementNamed(context, '/signup');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? 'فشل تسجيل الدخول')),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  // =====================================================
+  // Load Remember Me
+  // =====================================================
+
+  Future<void> _loadSavedCredentials() async {
+    final savedRememberMe = await _storage.read(key: "remember_me");
+
+    if (savedRememberMe == "true") {
+      final savedEmail = await _storage.read(key: "email");
+
+      if (!mounted) return;
+
+      setState(() {
+        _rememberMe = true;
+
+        if (savedEmail != null) {
+          emailController.text = savedEmail;
+        }
+      });
+    }
+  }
+
+  // =====================================================
+  // Login
+  // =====================================================
+
+  Future<void> _handleLogin() async {
+    final t = AppLocalizations.of(context)!;
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    try {
+      await _authService.login(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      // =====================================================
+      // Remember Me
+      // =====================================================
+
+      if (_rememberMe) {
+        await _storage.write(key: "remember_me", value: "true");
+
+        await _storage.write(key: "email", value: emailController.text.trim());
+      } else {
+        await _storage.delete(key: "remember_me");
+
+        await _storage.delete(key: "email");
+      }
+
+      if (!mounted) return;
+
+      // =====================================================
+      // Go To Home
+      // =====================================================
+
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      String message;
+
+      switch (e.code) {
+        case 'user-not-found':
+          message = t.userNotFound;
+          break;
+
+        case 'wrong-password':
+          message = t.passwordsDoNotMatch;
+          break;
+
+        case 'invalid-credential':
+          message = t.invalidCredentials;
+          break;
+
+        case 'invalid-email':
+          message = t.invalidEmail;
+          break;
+
+        case 'too-many-requests':
+          message = t.faildlogin;
+          break;
+
+        default:
+          message = t.faildlogin;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: const Color.fromARGB(255, 129, 27, 20),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.faildlogin),
+          backgroundColor: const Color.fromARGB(255, 129, 27, 20),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColorTrans,
+                borderRadius: BorderRadius.circular(20),
+                border: BoxBorder.all(color: AppColors.gold),
+              ),
+
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Align(
+                      alignment: AlignmentDirectional.topStart,
+                      child: IconButton(
+                        onPressed: () {
+                          final currentLanguage = Localizations.localeOf(
+                            context,
+                          ).languageCode;
+                          if (currentLanguage == 'en') {
+                            widget.onLanguageChanged(const Locale('ar'));
+                          } else {
+                            widget.onLanguageChanged(const Locale('en'));
+                          }
+                        },
+                        icon: const ImageIcon(
+                          AssetImage('assets/images/translation.png'),
+                          size: 30,
+                          color: AppColors.gold,
+                        ),
+                      ),
+                    ),
+
+                    CircleAvatar(
+                      radius: 65,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/userImage.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+
+                    SharedText(
+                      title: t.welcomeBack,
+                      colorString: AppColors.darkBlue,
+                      fontNum: 35,
+                    ),
+                    const SizedBox(height: 5),
+                    DecoratedBox(
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.goldTrans,
+                            spreadRadius: 7,
+                            blurRadius: 15,
+                          ),
+                        ],
+                      ),
+
+                      child: SharedText(
+                        title: t.loginpMessage,
+                        colorString: AppColors.darkBlue,
+                        fontNum: 12,
+                        fontWeight: FontWeight.bold,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    SharedTextFormField(
+                      labelText: t.email,
+                      hintText: t.enterEmail,
+                      iconReq: Icons.email_outlined,
+                      controller: emailController,
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    SharedTextFormField(
+                      labelText: t.password,
+                      hintText: t.enterPassword,
+                      iconReq: Icons.password_outlined,
+                      controller: passwordController,
+                      isSecure: true,
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Checkbox(
+                                value: _rememberMe,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _rememberMe = value ?? false;
+                                  });
+                                },
+                                activeColor: AppColors.darkBlue,
+                                checkColor: Colors.white,
+                                side: const BorderSide(
+                                  color: AppColors.gold,
+                                  width: 2,
+                                ),
+                              ),
+                              Flexible(
+                                child: SharedText(
+                                  title: t.remmberMe,
+                                  colorString: AppColors.darkBlue,
+                                  fontNum: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/forgotPassword');
+                          },
+                          child: SharedText(
+                            title: t.forgotPassword,
+                            colorString: AppColors.darkBlue,
+                            fontNum: 11,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 2.5),
+
+                    ElevatedButton.icon(
+                      onPressed: _handleLogin,
+                      style: ElevatedButton.styleFrom(
+                        elevation: 7,
+                        minimumSize: const Size(70, 40),
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(3.0),
+                        ),
+                        shadowColor: AppColors.gold,
+                      ),
+                      icon: const Icon(
+                        Icons.login,
+                        size: 17,
+                        color: Colors.black,
+                      ),
+                      label: SharedText(
+                        title: t.login,
+                        colorString: Colors.black,
+                        fontNum: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    SharedText(
+                      title: t.or,
+                      colorString: AppColors.darkBlue,
+                      fontNum: 10,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                    const SizedBox(height: 5),
+
+                    _isLoading
+                        ? CircularProgressIndicator(color: AppColors.gold)
+                        : ElevatedButton.icon(
+                            onPressed: _handleGoogleLogin,
+                            style: ElevatedButton.styleFrom(
+                              elevation: 7,
+                              minimumSize: Size(70, 40),
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                            ),
+                            icon: Image(
+                              width: 30,
+                              height: 30,
+                              image: AssetImage('assets/images/google.png'),
+                            ),
+
+                            label: SharedText(
+                              title: t.signUpWithGoogle,
+                              colorString: AppColors.darkBlue,
+                              fontNum: 17,
+                            ),
+                          ),
+                    const SizedBox(height: 2.5),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: SharedText(
+                            title: t.noAccount,
+                            colorString: AppColors.darkBlue,
+                            fontNum: 13,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/signup');
+                          },
+                          child: SharedText(
+                            title: t.signUp,
+                            colorString: AppColors.darkBlue,
+                            fontNum: 14,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

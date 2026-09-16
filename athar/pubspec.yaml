@@ -1,0 +1,69 @@
+name: athar
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  pinput: ^5.0.1
+  flutter_secure_storage: ^11.0.0
+
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^8.2.1
+  animated_text_kit: ^4.2.2
+  firebase_core: ^4.14.0
+  firebase_auth: ^6.6.1
+  cloud_firestore: ^6.9.0
+  google_sign_in: ^7.2.0
+  provider: ^6.1.5+1
+  firebase_storage: ^13.6.0
+  image_picker: ^1.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  generate: true
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/loginProf.jpg
+    - assets/images/signupProf.png
+    - assets/images/google.png
+    - assets/images/translation.png
+    - assets/images/messagesBackground.jpg
+    - assets/images/chat.png
+    - assets/images/Schedule.png
+    - assets/images/random.png
+    - assets/images/homeIcon.png
+    - assets/images/historyIcon.png
+    - assets/images/favoriteIcon.png
+    - assets/images/randomUser.png
+    - assets/images/cloudy.png
+    - assets/images/sun.png
+    - assets/images/bird.png
+    - assets/images/message.png
+    - assets/images/appLogo.png
+    - assets/images/empty_favorites.png
+    - assets/images/background.png
+    - assets/images/userImage.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/appLogo.png"
