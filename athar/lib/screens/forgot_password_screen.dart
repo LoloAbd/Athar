@@ -30,10 +30,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     super.dispose();
   }
 
-  // ============================================================
-  // SEND RESET EMAIL
-  // ============================================================
-
   Future<void> _sendResetEmail(AppLocalizations t) async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) {
@@ -78,9 +74,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     }
   }
 
-  // ============================================================
-  // FIREBASE ERROR
-  // ============================================================
 
   void _showErrorMessage(FirebaseAuthException e) {
     final t = AppLocalizations.of(context)!;
@@ -115,9 +108,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     SharedSnackBar.showError(context: context, message: message);
   }
 
-  // ============================================================
-  // EMAIL VALIDATION
-  // ============================================================
 
   String? _validateEmail(String? value) {
     final t = AppLocalizations.of(context)!;
@@ -137,9 +127,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return null;
   }
 
-  // ============================================================
-  // BUILD
-  // ============================================================
 
   @override
   Widget build(BuildContext context) {
@@ -166,9 +153,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-
               padding: const EdgeInsets.fromLTRB(10, 10, 30, 25),
-
               decoration: BoxDecoration(
                 color: AppColors.primaryColorTrans,
                 borderRadius: BorderRadius.circular(20),
@@ -176,23 +161,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
               child: Form(
                 key: _formKey,
-
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-
                   children: [
-                    // ==================================================
-                    // LANGUAGE BUTTON
-                    // ==================================================
                     Align(
                       alignment: AlignmentDirectional.topStart,
-
                       child: IconButton(
                         onPressed: () {
                           final currentLanguage = Localizations.localeOf(
                             context,
                           ).languageCode;
-
                           if (currentLanguage == 'en') {
                             widget.onLanguageChanged(const Locale('ar'));
                           } else {
@@ -209,10 +187,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
 
                     const SizedBox(height: 5),
-
-                    // ==================================================
-                    // TITLE
-                    // ==================================================
                     SharedText(
                       title: t.forgotPassword,
                       colorString: AppColors.darkBlue,
@@ -222,12 +196,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                     const SizedBox(height: 15),
 
-                    // ==================================================
-                    // MESSAGE
-                    // ==================================================
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-
                       child: SharedText(
                         title: t.forgotPasswordMessage,
                         colorString: AppColors.darkBlue,
@@ -237,13 +207,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
 
                     const SizedBox(height: 30),
-
-                    // ==================================================
-                    // EMAIL FIELD
-                    // ==================================================
+                    
                     Align(
                       alignment: AlignmentDirectional.centerStart,
-
                       child: SharedText(
                         title: t.email,
                         colorString: AppColors.darkBlue,
@@ -256,15 +222,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                     TextFormField(
                       controller: emailController,
-
                       keyboardType: TextInputType.emailAddress,
-
                       textInputAction: TextInputAction.done,
-
                       autofillHints: const [AutofillHints.email],
-
                       validator: _validateEmail,
-
                       onFieldSubmitted: (_) {
                         if (!_isLoading) {
                           _sendResetEmail(t);
@@ -278,25 +239,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                       decoration: InputDecoration(
                         hintText: t.enterYourEmail,
-
                         hintStyle: TextStyle(
                           color: AppColors.darkBlue.withValues(alpha: 0.55),
                         ),
-
                         filled: true,
-
                         fillColor: AppColors.primaryColor,
-
                         prefixIcon: const Icon(
                           Icons.email_outlined,
                           color: AppColors.darkBlue,
                         ),
-
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 15,
                           vertical: 16,
                         ),
-
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
 
@@ -305,7 +260,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             width: 2,
                           ),
                         ),
-
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
 
@@ -314,7 +268,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             width: 2,
                           ),
                         ),
-
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
 
@@ -323,19 +276,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             width: 2.5,
                           ),
                         ),
-
                         errorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-
                           borderSide: const BorderSide(
                             color: Colors.red,
                             width: 2,
                           ),
                         ),
-
                         focusedErrorBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-
                           borderSide: const BorderSide(
                             color: Colors.red,
                             width: 2,
@@ -346,35 +295,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                     const SizedBox(height: 25),
 
-                    // ==================================================
-                    // SEND BUTTON
-                    // ==================================================
-                    ElevatedButton.icon(
+                   ElevatedButton.icon(
                       onPressed: () {
                         _isLoading ? null : _sendResetEmail(t);
                       },
 
                       style: ElevatedButton.styleFrom(
                         elevation: 7,
-
                         minimumSize: const Size(200, 50),
-
                         backgroundColor: Colors.white,
-
                         disabledBackgroundColor: Colors.grey.shade300,
-
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-
                         shadowColor: AppColors.gold,
                       ),
-
                       icon: _isLoading
                           ? const SizedBox(
                               width: 20,
                               height: 20,
-
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: AppColors.darkBlue,
@@ -385,39 +324,26 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               size: 22,
                               color: Colors.black,
                             ),
-
                       label: SharedText(
                         title: _isLoading ? t.sending : t.sendResetLink,
-
                         colorString: Colors.black,
-
                         fontNum: 18,
-
                         fontWeight: FontWeight.bold,
                       ),
                     ),
 
                     const SizedBox(height: 15),
-
-                    // ==================================================
-                    // BACK TO LOGIN
-                    // ==================================================
                     TextButton(
                       onPressed: _isLoading
                           ? null
                           : () {
                               Navigator.pushReplacementNamed(context, '/login');
                             },
-
                       child: SharedText(
                         title: t.backToLogin,
-
                         colorString: AppColors.darkBlue,
-
                         fontNum: 16,
-
                         fontWeight: FontWeight.bold,
-
                         decoration: TextDecoration.underline,
                       ),
                     ),
@@ -430,8 +356,4 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       ),
     );
   }
-
-  // ============================================================
-  // TEXT BUILDER
-  // ============================================================
 }

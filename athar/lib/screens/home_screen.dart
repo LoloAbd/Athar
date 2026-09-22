@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:athar/services/auth_service.dart';
 import '../l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 import '../widgets/shared_text.dart';
 import '../widgets/section_header.dart';
 import '../widgets/quick_action_card.dart';
+import '../widgets/shared_snack_bar.dart';
 
 class Homepage extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
@@ -26,15 +26,16 @@ class _HomepageState extends State<Homepage> {
 
   bool isLoadingMessage = true;
   bool isFav = false;
+  bool haveNotification = false;
 
   @override
   void initState() {
     super.initState();
-    loadUserData();
-    loadRandomMessage();
+    _loadUserData();
+    _loadRandomMessage();
   }
 
-  Future<void> loadUserData() async {
+  Future<void> _loadUserData() async {
     final name = await _authService.getUserName();
 
     if (mounted && name != null) {
@@ -45,7 +46,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   // Get random message
-  Future<void> loadRandomMessage() async {
+  Future<void> _loadRandomMessage() async {
     if (!mounted) return;
 
     setState(() {
@@ -131,7 +132,7 @@ class _HomepageState extends State<Homepage> {
 
   // Called by RefreshIndicator when the user pulls down to refresh
   Future<void> _handleRefresh() async {
-    await Future.wait([loadUserData(), loadRandomMessage()]);
+    await Future.wait([_loadUserData(), _loadRandomMessage()]);
   }
 
   // Add to favorites
@@ -140,33 +141,14 @@ class _HomepageState extends State<Homepage> {
     AppLocalizations t,
   ) async {
     final String? messageId = message['messageId']?.toString();
-
     if (messageId == null || messageId.isEmpty) {
       debugPrint('messageId is missing');
       return;
     }
-
     try {
       await _authService.addFavoriteMessage(messageId, message);
-
       if (!mounted) return;
-
-      final bool isArabic =
-          Localizations.localeOf(context).languageCode == 'ar';
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.favorite,
-            style: GoogleFonts.getFont(
-              isArabic ? 'Almarai' : 'Alike',
-              textStyle: const TextStyle(color: Colors.black, fontSize: 14),
-            ),
-          ),
-          duration: const Duration(seconds: 1),
-          backgroundColor: AppColors.goldTrans,
-        ),
-      );
+      SharedSnackBar.showSuccess(context: context, message: t.favorite);
     } catch (e) {
       debugPrint('Error adding favorite: $e');
     }
@@ -180,8 +162,6 @@ class _HomepageState extends State<Homepage> {
 
     final DateTime now = DateTime.now();
     final int hour = now.hour;
-
-    const bool hasNotification = true;
 
     return Scaffold(
       extendBodyBehindAppBar: false,
@@ -340,16 +320,18 @@ class _HomepageState extends State<Homepage> {
                   debugPrint('Logout error: ${e.code}');
 
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('فشل تسجيل الخروج: ${e.message}')),
+                    SharedSnackBar.showError(
+                      context: context,
+                      message: t.logoutFaild,
                     );
                   }
                 } catch (e) {
                   debugPrint('Logout error: $e');
 
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('حدث خطأ غير متوقع')),
+                    SharedSnackBar.showError(
+                      context: context,
+                      message: t.serverError,
                     );
                   }
                 }
@@ -417,7 +399,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                if (hasNotification)
+                if (haveNotification)
                   Positioned(
                     top: 9,
                     right: 9,
@@ -598,6 +580,7 @@ class _HomepageState extends State<Homepage> {
                               Shadow(color: Colors.white, blurRadius: 30),
                             ],
                             fontWeight: FontWeight.bold,
+                            maxLines: 100,
                           ),
 
                         const SizedBox(height: 15),

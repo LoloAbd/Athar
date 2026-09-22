@@ -182,6 +182,12 @@ abstract class AppLocalizations {
   /// **'Create your account'**
   String get createAccount;
 
+  /// No description provided for @logoutFaild.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed logout'**
+  String get logoutFaild;
+
   /// No description provided for @email.
   ///
   /// In en, this message translates to:

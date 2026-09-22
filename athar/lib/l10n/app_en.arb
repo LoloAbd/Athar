@@ -9,13 +9,16 @@
   "signUpMessage": "Join us today and start your journey with a personalized experience made for you",
   "loginpMessage": "Sign in to continue your journey and explore everything we have prepared for you",
 
-  "login": "Log in",
+  "login": "Log in", 
   "logout": "Log out",
   "signUp": "Register",
   "or" : "Or continue with",
   "signUpWithGoogle" : "Google",
   "createAccount": "Create your account",
- 
+
+
+  "logoutFaild":"Failed logout", 
+  
   "email": "Email Address",
   "password": "Password",
   "confirmPassword": "Confirm password",

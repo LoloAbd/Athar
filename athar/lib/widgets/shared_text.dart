@@ -10,6 +10,7 @@ class SharedText extends StatelessWidget {
   final TextAlign? textAlign;
   final List<Shadow>? shadow;
   final TextOverflow? textOverflow;
+  final int? maxLines;
 
   static const Color gold = Color(0xFFE3B866);
 
@@ -23,6 +24,7 @@ class SharedText extends StatelessWidget {
     this.textAlign,
     this.shadow,
     this.textOverflow,
+    this.maxLines = 3,
   });
 
   @override
@@ -40,14 +42,14 @@ class SharedText extends StatelessWidget {
         textStyle: TextStyle(
           color: colorString,
           fontSize: fontNum.toDouble(),
-          overflow: TextOverflow.ellipsis,
+          overflow: textOverflow,
           fontWeight: fontWeight,
           decoration: decoration,
           decorationColor: gold,
         ),
       ),
 
-      maxLines: 10,
+      maxLines: maxLines,
       textAlign: textAlign,
     );
   }

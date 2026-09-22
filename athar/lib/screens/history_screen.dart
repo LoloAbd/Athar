@@ -31,22 +31,17 @@ class HistoryScreenState extends State<HistoryScreen> {
   }
 
   // LOAD HISTORY
-
   Future<void> loadHistory() async {
     try {
       final data = await _authService.getHistoryMessages();
-
       if (!mounted) return;
-
       setState(() {
         historyMessages = data;
         isLoading = false;
       });
     } catch (e) {
       print('Error loading history: $e');
-
       if (!mounted) return;
-
       setState(() {
         historyMessages = [];
         isLoading = false;
@@ -55,7 +50,6 @@ class HistoryScreenState extends State<HistoryScreen> {
   }
 
   // FILTER HISTORY
-
   List<Map<String, dynamic>> getFilteredHistory(bool isArabic) {
     List<Map<String, dynamic>> result = historyMessages;
 
@@ -127,16 +121,6 @@ class HistoryScreenState extends State<HistoryScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: AppColors.darkBlue,
-            size: 22,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         title: SharedText(
           title: t.history,
           colorString: AppColors.darkBlue,
@@ -149,7 +133,6 @@ class HistoryScreenState extends State<HistoryScreen> {
       body: SafeArea(
         child: Directionality(
           textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-
           child: Column(
             children: [
               Padding(
@@ -162,7 +145,6 @@ class HistoryScreenState extends State<HistoryScreen> {
                     borderRadius: BorderRadius.circular(28),
                     border: Border.all(color: AppColors.secondaryColor),
                   ),
-
                   child: Row(
                     children: [
                       Expanded(
@@ -272,9 +254,7 @@ class HistoryScreenState extends State<HistoryScreen> {
     final String date = message['date']?.toString() ?? '';
     final String time = message['time']?.toString() ?? '';
     return GestureDetector(
-      onTap: () {
-        // Open message details
-      },
+      onTap: () => _showMessageDialog(message, isArabic),
 
       child: Container(
         width: double.infinity,
@@ -553,4 +533,118 @@ class HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
+  // MESSAGE DETAILS POPUP
+  void _showMessageDialog(Map<String, dynamic> message, bool isArabic) {
+    final String type = message['type']?.toString().trim() ?? '';
+    final String text = isArabic
+        ? (message['textAr'] ?? '').toString()
+        : (message['textEn'] ?? '').toString();
+    final String date = message['date']?.toString() ?? '';
+    final String time = message['time']?.toString() ?? '';
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Directionality(
+          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+          child: Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      _buildTypeIcon(type),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _getTypeBackground(type),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: SharedText(
+                            title: type,
+                            colorString: _getTypeColor(type),
+                            fontNum: 18,
+                            fontWeight: FontWeight.w600,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: AppColors.moreColor,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // FULL MESSAGE TEXT
+                  SingleChildScrollView(
+                    child: SharedText(
+                      title: text,
+                      colorString: AppColors.darkBlue,
+                      fontNum: 16,
+                      fontWeight: FontWeight.w500,
+                      textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                      maxLines: 100,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 13,
+                        color: AppColors.moreColor,
+                      ),
+                      const SizedBox(width: 5),
+                      SharedText(
+                        title: date,
+                        colorString: AppColors.secondaryText,
+                        fontNum: 10,
+                      ),
+                      if (time.isNotEmpty) ...[
+                        const SizedBox(width: 6),
+                        const Text(
+                          '•',
+                          style: TextStyle(
+                            color: AppColors.moreColor,
+                            fontSize: 10,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        SharedText(
+                          title: time,
+                          colorString: AppColors.secondaryText,
+                          fontNum: 10,
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

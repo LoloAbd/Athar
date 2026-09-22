@@ -14,7 +14,9 @@
   "signUp": "إنشاء حساب",
   "or" : " أو أكمل باستخدام",
   "signUpWithGoogle" : "جوجل",
-  "createAccount": "أنشئ حسابك",
+  "createAccount": "أنشئ حسابك", 
+
+  "logoutFaild":"فشل تسجيل الخروج", 
 
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",

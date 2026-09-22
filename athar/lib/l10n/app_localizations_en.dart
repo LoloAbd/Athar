@@ -54,6 +54,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createAccount => 'Create your account';
 
   @override
+  String get logoutFaild => 'Failed logout';
+
+  @override
   String get email => 'Email';
 
   @override

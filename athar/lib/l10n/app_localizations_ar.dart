@@ -54,6 +54,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get createAccount => 'أنشئ حسابك';
 
   @override
+  String get logoutFaild => 'فشل تسجيل الخروج';
+
+  @override
   String get email => 'البريد الإلكتروني';
 
   @override
