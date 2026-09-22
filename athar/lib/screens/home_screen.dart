@@ -743,6 +743,7 @@ class _HomepageState extends State<Homepage> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: SharedText(
+                                // TODO: get reminder messgae from message collection where type == reminder
                                 title: t.reminderMessage,
                                 colorString: Colors.black,
                                 fontNum: 13,

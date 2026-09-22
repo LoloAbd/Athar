@@ -13,6 +13,10 @@ class AppColors {
 
   static const Color darkBlue = Color.fromARGB(255, 17, 42, 69);
 
+  static const Color error = Color.fromARGB(255, 117, 23, 23);
+
+  static const Color success = Color(0xFF1B5E20);
+
   // ==============================
   // Gold Colors
   // ==============================
@@ -70,6 +74,4 @@ class AppColors {
   static const Color moreColor = Color(0xFF55708A);
   static const Color favButtonBackground = Color(0xFFFFF7E5);
   static const Color selectedCatButton = Color(0x30173B5E);
-
-
 }

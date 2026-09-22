@@ -343,7 +343,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkBlue.withOpacity(0.25),
+            color: AppColors.darkBlue.withValues(alpha: 0.25),
 
             blurRadius: 22,
 
@@ -361,7 +361,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
 
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha: 0.08),
 
               border: Border.all(color: AppColors.gold, width: 1.6),
             ),
@@ -389,7 +389,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
           SharedText(
             title: t.writeAMessageAndLetUsFindSomeone,
-            colorString: Colors.white.withOpacity(0.75),
+            colorString: Colors.white.withValues(alpha: 0.75),
             fontNum: 13,
             textAlign: TextAlign.center,
           ),
@@ -434,8 +434,8 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
             boxShadow: [
               BoxShadow(
                 color: focused
-                    ? AppColors.darkBlue.withOpacity(0.10)
-                    : Colors.black.withOpacity(0.04),
+                    ? AppColors.darkBlue.withValues(alpha: 0.10)
+                    : Colors.black.withValues(alpha: 0.04),
 
                 blurRadius: focused ? 18 : 10,
 
@@ -484,7 +484,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                   hintText: t.writeYourRandomMessage,
 
                   hintStyle: TextStyle(
-                    color: AppColors.darkBlue.withOpacity(0.35),
+                    color: AppColors.darkBlue.withValues(alpha: 0.35),
 
                     fontSize: 14.5,
 
@@ -505,7 +505,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
                 colorString: length >= _maxChars
                     ? Colors.redAccent
-                    : AppColors.darkBlue.withOpacity(0.45),
+                    : AppColors.darkBlue.withValues(alpha: 0.45),
 
                 fontNum: 11,
               ),
@@ -640,7 +640,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
           SharedText(
             title: t.tapBelowToFindSomeone,
 
-            colorString: AppColors.darkBlue.withOpacity(0.55),
+            colorString: AppColors.darkBlue.withValues(alpha: 0.55),
 
             fontNum: 12,
 
@@ -666,7 +666,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
       padding: const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
-        color: AppColors.goldTrans.withOpacity(0.25),
+        color: AppColors.goldTrans.withValues(alpha: 0.25),
 
         borderRadius: BorderRadius.circular(18),
 
@@ -709,7 +709,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
           SharedText(
             title: t.yourMessageWillBeSentTo,
 
-            colorString: AppColors.darkBlue.withOpacity(0.65),
+            colorString: AppColors.darkBlue.withValues(alpha: 0.65),
 
             fontNum: 12,
 
@@ -776,7 +776,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
               SharedText(
                 title: subtitle,
 
-                colorString: AppColors.darkBlue.withOpacity(0.55),
+                colorString: AppColors.darkBlue.withValues(alpha: 0.55),
 
                 fontNum: 12,
               ),
@@ -803,7 +803,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
               ? const []
               : [
                   BoxShadow(
-                    color: AppColors.darkBlue.withOpacity(0.30),
+                    color: AppColors.darkBlue.withValues(alpha: 0.30),
 
                     blurRadius: 16,
 
@@ -818,7 +818,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.darkBlue,
 
-            disabledBackgroundColor: AppColors.darkBlue.withOpacity(0.45),
+            disabledBackgroundColor: AppColors.darkBlue.withValues(alpha: 0.45),
 
             elevation: 0,
 

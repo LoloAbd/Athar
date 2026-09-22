@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:athar/services/auth_service.dart';
 import '../theme/app_colors.dart';
 import '../widgets/shared_text.dart';
+import '../widgets/shared_snack_bar.dart';
 
 class FavoritesScreen extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
@@ -111,20 +111,9 @@ class FavoritesScreenState extends State<FavoritesScreen> {
           (item) => item['messageId']?.toString() == messageId,
         );
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.unfavorite,
-            style: GoogleFonts.getFont(
-              Localizations.localeOf(context).languageCode == "ar"
-                  ? 'Almarai'
-                  : 'Alike',
-              textStyle: TextStyle(color: Colors.black, fontSize: 13),
-            ),
-          ),
-          duration: const Duration(seconds: 1),
-          backgroundColor: AppColors.goldTrans,
-        ),
+      SharedSnackBar.showSuccess(
+        context: context,
+        message: t.messageRemovedFromFavorites,
       );
     } catch (e) {
       debugPrint('Error removing favorite: $e');
@@ -193,15 +182,12 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                   padding: const EdgeInsets.all(5),
                   height: 55,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF5F8FB),
+                    color: AppColors.secondaryColor,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: const Color(0xFFD7E2ED),
-                      width: 1,
-                    ),
+                    border: Border.all(color: AppColors.favBordar, width: 1),
                     boxShadow: const [
                       BoxShadow(
-                        color: Color(0x14173B5E),
+                        color: AppColors.favBoxShadow,
                         blurRadius: 12,
                         offset: Offset(0, 4),
                       ),
@@ -223,7 +209,10 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                       const SizedBox(width: 5),
 
                       Expanded(
-                        child: _buildCategoryButton(title: t.messages, index: 2),
+                        child: _buildCategoryButton(
+                          title: t.messages,
+                          index: 2,
+                        ),
                       ),
 
                       const SizedBox(width: 5),
@@ -456,27 +445,50 @@ class FavoritesScreenState extends State<FavoritesScreen> {
               ),
 
               const Spacer(),
+            ],
+          ),
+          const SizedBox(height: 15),
 
-              Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: AppColors.favButtonBackground,
-                  shape: BoxShape.circle,
-                ),
+          Align(
+            alignment: AlignmentGeometry.centerStart,
 
-                child: IconButton(
-                  onPressed: () {
-                    removeFavorite(message, t);
-                  },
-                  icon: Icon(
-                    Icons.favorite_rounded,
-                    color: AppColors.gold,
-                    size: 20,
+            child: Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  removeFavorite(message, t);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.secondaryColor,
+                  elevation: 3,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.favorite_rounded,
+                      color: AppColors.gold,
+                      size: 20,
+                    ),
+
+                    const SizedBox(width: 6),
+
+                    SharedText(
+                      title: t.unfavorite,
+                      colorString: AppColors.darkBlue,
+                      fontNum: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -496,7 +508,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
       },
 
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 360),
         curve: Curves.easeInOut,
         height: 35,
         alignment: Alignment.center,

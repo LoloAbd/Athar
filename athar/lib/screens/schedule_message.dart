@@ -117,8 +117,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         onPrimary: Colors.white,
         surface: Colors.white,
         onSurface: AppColors.darkBlue,
-      ),
-      dialogBackgroundColor: Colors.white,
+      ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
     );
   }
 
@@ -453,7 +452,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkBlue.withOpacity(0.25),
+            color: AppColors.darkBlue.withValues(alpha: 0.25),
             blurRadius: 22,
             offset: const Offset(0, 10),
           ),
@@ -468,7 +467,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.08),
+              color: Colors.white.withValues(alpha: 0.08),
 
               border: Border.all(color: AppColors.gold, width: 1.6),
             ),
@@ -494,7 +493,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
           SharedText(
             title: t.writeItNowReceiveItExactlyWhenYouChoose,
-            colorString: Colors.white.withOpacity(0.75),
+            colorString: Colors.white.withValues(alpha: 0.75),
             fontNum: 13,
             textAlign: TextAlign.center,
           ),
@@ -540,7 +539,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
               SharedText(
                 title: subtitle,
-                colorString: AppColors.darkBlue.withOpacity(0.55),
+                colorString: AppColors.darkBlue.withValues(alpha: 0.55),
                 fontNum: 12,
               ),
             ],
@@ -576,8 +575,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         boxShadow: [
           BoxShadow(
             color: focused
-                ? AppColors.darkBlue.withOpacity(0.10)
-                : Colors.black.withOpacity(0.04),
+                ? AppColors.darkBlue.withValues(alpha: 0.10)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: focused ? 18 : 10,
             offset: const Offset(0, 6),
           ),
@@ -618,7 +617,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               hintText: t.whatDoYouWantToRemember,
 
               hintStyle: TextStyle(
-                color: AppColors.darkBlue.withOpacity(0.35),
+                color: AppColors.darkBlue.withValues(alpha: 0.35),
 
                 fontSize: 14.5,
 
@@ -637,7 +636,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
             title: '$length / $_maxChars',
             colorString: length >= _maxChars
                 ? Colors.redAccent
-                : AppColors.darkBlue.withOpacity(0.45),
+                : AppColors.darkBlue.withValues(alpha: 0.45),
             fontNum: 11,
           ),
         ],
@@ -667,7 +666,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
         itemCount: options.length,
 
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
 
         itemBuilder: (context, index) {
           final label = options.keys.elementAt(index);
@@ -744,7 +743,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         padding: const EdgeInsets.all(15),
 
         decoration: BoxDecoration(
-          color: isSet ? AppColors.goldTrans.withOpacity(0.30) : Colors.white,
+          color: isSet ? AppColors.goldTrans.withValues(alpha: 0.30) : Colors.white,
 
           borderRadius: BorderRadius.circular(18),
 
@@ -752,7 +751,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
 
               blurRadius: 10,
 
@@ -783,7 +782,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                 Icon(
                   Icons.expand_more_rounded,
                   size: 18,
-                  color: AppColors.darkBlue.withOpacity(0.5),
+                  color: AppColors.darkBlue.withValues(alpha: 0.5),
                 ),
               ],
             ),
@@ -795,7 +794,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
               colorString: isSet
                   ? AppColors.darkBlue
-                  : AppColors.darkBlue.withOpacity(0.4),
+                  : AppColors.darkBlue.withValues(alpha: 0.4),
 
               fontNum: 15,
 
@@ -861,7 +860,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               SharedText(
                 title: '${_getDateText(t)}  ·  ${_getTimeText(t)}',
 
-                colorString: AppColors.darkBlue.withOpacity(0.6),
+                colorString: AppColors.darkBlue.withValues(alpha: 0.6),
 
                 fontNum: 12,
 
@@ -898,7 +897,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               title: message.isEmpty ? t.yourMessageWillAppearHere : message,
 
               colorString: message.isEmpty
-                  ? AppColors.darkBlue.withOpacity(0.4)
+                  ? AppColors.darkBlue.withValues(alpha: 0.4)
                   : AppColors.darkBlue,
 
               fontNum: 14,
@@ -953,7 +952,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               ? const []
               : [
                   BoxShadow(
-                    color: AppColors.darkBlue.withOpacity(0.30),
+                    color: AppColors.darkBlue.withValues(alpha: 0.30),
 
                     blurRadius: 16,
 
@@ -968,7 +967,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.darkBlue,
 
-            disabledBackgroundColor: AppColors.darkBlue.withOpacity(0.45),
+            disabledBackgroundColor: AppColors.darkBlue.withValues(alpha: 0.45),
 
             elevation: 0,
 

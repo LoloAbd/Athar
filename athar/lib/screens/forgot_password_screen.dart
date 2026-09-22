@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import '../widgets/shared_snack_bar.dart';
+import '../widgets/shared_text.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../services/auth_service.dart';
@@ -34,7 +34,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   // SEND RESET EMAIL
   // ============================================================
 
-  Future<void> _sendResetEmail() async {
+  Future<void> _sendResetEmail(AppLocalizations t) async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) {
       return;
@@ -55,7 +55,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         _isLoading = false;
       });
 
-      _showSuccessMessage();
+      SharedSnackBar.showSuccess(
+        context: context,
+        message: t.passwordResetEmailSent,
+      );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
 
@@ -71,26 +74,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         _isLoading = false;
       });
 
-      _showGeneralError();
+      SharedSnackBar.showError(context: context, message: t.passwordResetError);
     }
-  }
-
-  // ============================================================
-  // SUCCESS MESSAGE
-  // ============================================================
-
-  void _showSuccessMessage() {
-    final t = AppLocalizations.of(context)!;
-
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(t.passwordResetEmailSent, textAlign: TextAlign.center),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 5),
-      ),
-    );
   }
 
   // ============================================================
@@ -127,33 +112,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         message = t.passwordResetError;
     }
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, textAlign: TextAlign.center),
-        backgroundColor: const Color.fromARGB(255, 111, 9, 2),
-        duration: const Duration(seconds: 5),
-      ),
-    );
-  }
-
-  // ============================================================
-  // GENERAL ERROR
-  // ============================================================
-
-  void _showGeneralError() {
-    final t = AppLocalizations.of(context)!;
-
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(t.passwordResetError, textAlign: TextAlign.center),
-        backgroundColor: const Color.fromARGB(255, 111, 9, 2),
-        duration: const Duration(seconds: 5),
-      ),
-    );
+    SharedSnackBar.showError(context: context, message: message);
   }
 
   // ============================================================
@@ -254,7 +213,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     // ==================================================
                     // TITLE
                     // ==================================================
-                    buildText(
+                    SharedText(
                       title: t.forgotPassword,
                       colorString: AppColors.darkBlue,
                       fontNum: 40,
@@ -269,7 +228,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
 
-                      child: buildText(
+                      child: SharedText(
                         title: t.forgotPasswordMessage,
                         colorString: AppColors.darkBlue,
                         fontNum: 15,
@@ -285,7 +244,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     Align(
                       alignment: AlignmentDirectional.centerStart,
 
-                      child: buildText(
+                      child: SharedText(
                         title: t.email,
                         colorString: AppColors.darkBlue,
                         fontNum: 17,
@@ -308,7 +267,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                       onFieldSubmitted: (_) {
                         if (!_isLoading) {
-                          _sendResetEmail();
+                          _sendResetEmail(t);
                         }
                       },
 
@@ -391,7 +350,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     // SEND BUTTON
                     // ==================================================
                     ElevatedButton.icon(
-                      onPressed: _isLoading ? null : _sendResetEmail,
+                      onPressed: () {
+                        _isLoading ? null : _sendResetEmail(t);
+                      },
 
                       style: ElevatedButton.styleFrom(
                         elevation: 7,
@@ -425,7 +386,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               color: Colors.black,
                             ),
 
-                      label: buildText(
+                      label: SharedText(
                         title: _isLoading ? t.sending : t.sendResetLink,
 
                         colorString: Colors.black,
@@ -448,7 +409,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               Navigator.pushReplacementNamed(context, '/login');
                             },
 
-                      child: buildText(
+                      child: SharedText(
                         title: t.backToLogin,
 
                         colorString: AppColors.darkBlue,
@@ -473,35 +434,4 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   // ============================================================
   // TEXT BUILDER
   // ============================================================
-
-  Text buildText({
-    required String title,
-    required Color colorString,
-    required int fontNum,
-    FontWeight fontWeight = FontWeight.normal,
-    TextDecoration decoration = TextDecoration.none,
-  }) {
-    return Text(
-      title,
-
-      style: GoogleFonts.getFont(
-        Localizations.localeOf(context).languageCode == 'ar'
-            ? 'Almarai'
-            : 'Alike',
-
-        textStyle: TextStyle(
-          color: colorString,
-          fontSize: fontNum.toDouble(),
-          overflow: TextOverflow.ellipsis,
-          fontWeight: fontWeight,
-          decoration: decoration,
-          decorationColor: AppColors.gold,
-        ),
-      ),
-
-      maxLines: 10,
-
-      textAlign: TextAlign.center,
-    );
-  }
 }

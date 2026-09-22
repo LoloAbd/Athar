@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 class GoogleAuthResult {
@@ -24,7 +22,7 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  // final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // ============================================================
   // SIGN UP (Email & Password)
@@ -45,12 +43,8 @@ class AuthService {
         await _firestore.collection('user').doc(user.uid).set({
           'name': name,
           'username': username,
-          'usernameLower': username.trim().toLowerCase(),
           'email': email,
-          'photoUrl': null,
           'createdAt': FieldValue.serverTimestamp(),
-          'favorites': [],
-          'history': [],
         });
       }
 
@@ -141,7 +135,7 @@ class AuthService {
         await _googleSignIn.signOut();
         return GoogleAuthResult(
           emailAlreadyExists: true,
-          message: 'هذا البريد الإلكتروني مستخدم مسبقًا، الرجاء تسجيل الدخول.',
+          // message: 'هذا البريد الإلكتروني مستخدم مسبقًا، الرجاء تسجيل الدخول.',
         );
       }
 
@@ -150,7 +144,7 @@ class AuthService {
         await _googleSignIn.signOut();
         return GoogleAuthResult(
           accountNotFound: true,
-          message: 'لا يوجد حساب بهذا البريد، الرجاء إنشاء حساب أولاً.',
+          // message: 'لا يوجد حساب بهذا البريد، الرجاء إنشاء حساب أولاً.',
         );
       }
 
@@ -175,7 +169,7 @@ class AuthService {
       if (e.code == 'account-exists-with-different-credential') {
         return GoogleAuthResult(
           emailAlreadyExists: true,
-          message: 'هذا البريد مرتبط بطريقة تسجيل دخول مختلفة.',
+          // message: 'هذا البريد مرتبط بطريقة تسجيل دخول مختلفة.',
         );
       }
 
@@ -207,9 +201,8 @@ class AuthService {
       await userRef.set({
         'name': name,
         'username': username,
-        'usernameLower': username.toLowerCase(),
         'email': email,
-        'photoUrl': user.photoURL,
+        // 'photoUrl': user.photoURL,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -256,12 +249,12 @@ class AuthService {
   // رابط صورة البروفايل من Firestore، وإذا مش موجود بيرجع صورة
   // حساب Firebase Auth (مثلاً صورة جوجل)
   // ============================================================
-  Future<String?> getUserPhotoUrl() async {
+  /* Future<String?> getUserPhotoUrl() async {
     final userData = await getUserData();
     final String? photoUrl = userData?['photoUrl'] as String?;
     if (photoUrl != null && photoUrl.isNotEmpty) return photoUrl;
     return _auth.currentUser?.photoURL;
-  }
+  }*/
 
   // ============================================================
   // USER DATA STREAM
@@ -281,7 +274,6 @@ class AuthService {
   // ============================================================
   // IS USERNAME TAKEN
   // بيتجاهل اسم المستخدم الحالي حتى ما يمنع المستخدم من حفظ نفس اسمه
-  // ملاحظة: الاستعلام بيعتمد على حقل usernameLower
   // ============================================================
   Future<bool> isUsernameTaken(String username) async {
     final user = _auth.currentUser;
@@ -291,7 +283,7 @@ class AuthService {
     try {
       final snapshot = await _firestore
           .collection('user')
-          .where('usernameLower', isEqualTo: value)
+          .where('username'.trim().toLowerCase(), isEqualTo: value)
           .limit(2)
           .get();
 
@@ -300,129 +292,6 @@ class AuthService {
       print('Error checking username: $e');
       return false;
     }
-  }
-
-  // ============================================================
-  // UPLOAD PROFILE IMAGE (Firebase Storage)
-  // بترجع رابط التحميل بعد الرفع
-  // ============================================================
-  Future<String> uploadProfileImage(File imageFile) async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      throw Exception('User is not logged in');
-    }
-
-    final ref = _storage.ref().child('profile_images').child('${user.uid}.jpg');
-
-    await ref.putFile(imageFile, SettableMetadata(contentType: 'image/jpeg'));
-
-    return await ref.getDownloadURL();
-  }
-
-  // ============================================================
-  // DELETE PROFILE IMAGE
-  // ============================================================
-  Future<void> deleteProfileImage() async {
-    final user = _auth.currentUser;
-    if (user == null) return;
-
-    try {
-      await _storage
-          .ref()
-          .child('profile_images')
-          .child('${user.uid}.jpg')
-          .delete();
-    } catch (e) {
-      // الصورة ممكن تكون غير موجودة أصلاً
-      print('Error deleting old profile image: $e');
-    }
-
-    await _firestore.collection('user').doc(user.uid).set({
-      'photoUrl': null,
-      'photoBase64': null,
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
-
-    await user.updatePhotoURL(null);
-  }
-
-  // ============================================================
-  // UPDATE PROFILE
-  // بتحدّث الاسم واسم المستخدم والصورة دفعة وحدة
-  // - imageFile: صورة جديدة (اختياري)
-  // - بترمي Exception إذا اسم المستخدم محجوز
-  // ============================================================
-  Future<void> updateProfile({
-    String? name,
-    String? username,
-    File? imageFile,
-  }) async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      throw Exception('User is not logged in');
-    }
-
-    final Map<String, dynamic> data = {
-      'updatedAt': FieldValue.serverTimestamp(),
-    };
-
-    if (name != null && name.trim().isNotEmpty) {
-      data['name'] = name.trim();
-    }
-
-    if (username != null && username.trim().isNotEmpty) {
-      final String cleanUsername = username.trim();
-
-      final bool taken = await isUsernameTaken(cleanUsername);
-      if (taken) {
-        throw Exception('username-already-taken');
-      }
-
-      data['username'] = cleanUsername;
-      data['usernameLower'] = cleanUsername.toLowerCase();
-    }
-
-    String? newPhotoUrl;
-    if (imageFile != null) {
-      newPhotoUrl = await uploadProfileImage(imageFile);
-      data['photoUrl'] = newPhotoUrl;
-    }
-
-    await _firestore
-        .collection('user')
-        .doc(user.uid)
-        .set(data, SetOptions(merge: true));
-
-    // تحديث بيانات Firebase Auth كمان حتى تضل متوافقة
-    if (data['name'] != null) {
-      await user.updateDisplayName(data['name'] as String);
-    }
-    if (newPhotoUrl != null) {
-      await user.updatePhotoURL(newPhotoUrl);
-    }
-
-    await user.reload();
-  }
-
-  // ============================================================
-  // بديل بدون Firebase Storage: تخزين الصورة Base64 داخل Firestore
-  // استعملها فقط إذا Storage مش مفعّل عندك (حد المستند 1MB)
-  // ============================================================
-  Future<void> updateProfileImageBase64(File imageFile) async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      throw Exception('User is not logged in');
-    }
-
-    final bytes = await imageFile.readAsBytes();
-    if (bytes.lengthInBytes > 700 * 1024) {
-      throw Exception('image-too-large');
-    }
-
-    await _firestore.collection('user').doc(user.uid).set({
-      'photoBase64': base64Encode(bytes),
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
   }
 
   // ============================================================
@@ -448,7 +317,7 @@ class AuthService {
   }
 
   // ============================================================
-  // GET RECEIVED / HISTORY COUNT
+  // GET HISTORY COUNT
   // ============================================================
   Future<int> getReceivedMessagesCount() async {
     final user = _auth.currentUser;
@@ -765,7 +634,7 @@ class AuthService {
   // ============================================================
   // ADD MESSAGE TO HISTORY IF NOT EXISTS
   // ============================================================
-  Future<bool> addToHistoryIfNotExists(String messageId) async {
+  /*Future<bool> addToHistoryIfNotExists(String messageId) async {
     final user = _auth.currentUser;
     if (user == null) return false;
 
@@ -784,12 +653,12 @@ class AuthService {
     });
 
     return true;
-  }
+  }*/
 
   // ============================================================
   // GET HISTORY MESSAGE IDS
   // ============================================================
-  Future<Set<String>> getHistoryMessageIds() async {
+  /*Future<Set<String>> getHistoryMessageIds() async {
     final user = _auth.currentUser;
     if (user == null) return {};
 
@@ -800,12 +669,12 @@ class AuthService {
         .get();
 
     return snapshot.docs.map((doc) => doc.id).toSet();
-  }
+  }*/
 
   // ============================================================
   // CAN GET RANDOM MESSAGE (Time Check)
   // ============================================================
-  Future<bool> canGetRandomMessage() async {
+  /*Future<bool> canGetRandomMessage() async {
     final user = _auth.currentUser;
     if (user == null) return false;
 
@@ -829,6 +698,7 @@ class AuthService {
 
     return now.isAfter(availableTime) || now.isAtSameMomentAs(availableTime);
   }
+*/
 
   // ============================================================
   // GET LATEST HISTORY MESSAGE

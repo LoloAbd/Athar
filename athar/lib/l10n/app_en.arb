@@ -262,7 +262,7 @@
 
   "changePassword": "Change password",
   "deleteAccount": "Delete account",
-
+ 
   "deleteMessageTitle": "Delete message?",
   "deleteMessageMessage": "Are you sure you want to delete this message?",
 
@@ -442,7 +442,7 @@
   "profilePhoto": "Profile Photo",
   "changeProfilePhoto": "You can change your profile photo here",
   "changePhoto": "Change Photo",
-
+ 
   "name": "Name",
   "enterYourName": "Enter your name",
   "nameRequired": "Name is required",
