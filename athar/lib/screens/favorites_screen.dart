@@ -319,182 +319,172 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
     final String time = message['time']?.toString() ?? '';
 
-    return Container(
-      width: double.infinity,
+    return GestureDetector(
+      onTap: () => _showMessageDialog(message, isArabic),
+      child: Container(
+        width: double.infinity,
 
-      margin: const EdgeInsets.only(bottom: 15),
+        margin: const EdgeInsets.only(bottom: 15),
 
-      padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(18),
 
-      decoration: BoxDecoration(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
 
-        borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20),
 
-        border: Border.all(color: AppColors.favBordar),
+          border: Border.all(color: AppColors.favBordar),
 
-        boxShadow: const [
-          BoxShadow(
-            color: AppColors.favBoxShadow,
-            blurRadius: 14,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
+          boxShadow: const [
+            BoxShadow(
+              color: AppColors.favBoxShadow,
+              blurRadius: 14,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SharedText(
-                title: '“',
-                colorString: AppColors.gold,
-                fontNum: 38,
-                fontWeight: FontWeight.bold,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SharedText(
+                  title: '“',
+                  colorString: AppColors.gold,
+                  fontNum: 38,
+                  fontWeight: FontWeight.bold,
+                ),
+              ],
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: SharedText(
+                title: text,
+                colorString: AppColors.darkBlue,
+                fontNum: 16,
+                fontWeight: FontWeight.w500,
+                textOverflow: TextOverflow.ellipsis,
               ),
+            ),
 
-              const Spacer(),
+            const SizedBox(height: 15),
 
-              IconButton(
-                onPressed: () {
-                  // Remove favorite
-                },
-
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
+            Row(
+              children: [
+                const Icon(
+                  Icons.calendar_today_outlined,
+                  size: 14,
                   color: AppColors.moreColor,
                 ),
-              ),
-            ],
-          ),
 
-          const SizedBox(height: 5),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-
-            child: SharedText(
-              title: text,
-              colorString: AppColors.darkBlue,
-              fontNum: 16,
-              fontWeight: FontWeight.w500,
-              textOverflow: TextOverflow.ellipsis,
-            ),
-          ),
-
-          const SizedBox(height: 15),
-
-          Row(
-            children: [
-              const Icon(
-                Icons.calendar_today_outlined,
-                size: 14,
-                color: AppColors.moreColor,
-              ),
-
-              const SizedBox(width: 5),
-
-              Flexible(
-                child: SharedText(
-                  title: date,
-                  colorString: AppColors.moreColor,
-                  fontNum: 10,
-                  textOverflow: TextOverflow.ellipsis,
-                ),
-              ),
-
-              if (time.isNotEmpty) ...[
-                const SizedBox(width: 6),
-                const Text(
-                  '•',
-                  style: TextStyle(color: AppColors.moreColor, fontSize: 10),
-                ),
-
-                const SizedBox(width: 6),
+                const SizedBox(width: 5),
 
                 Flexible(
                   child: SharedText(
-                    title: time,
+                    title: date,
                     colorString: AppColors.moreColor,
                     fontNum: 10,
                     textOverflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ],
 
-              const SizedBox(width: 10),
+                if (time.isNotEmpty) ...[
+                  const SizedBox(width: 6),
+                  const Text(
+                    '•',
+                    style: TextStyle(color: AppColors.moreColor, fontSize: 10),
+                  ),
 
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
+                  const SizedBox(width: 6),
 
-                decoration: BoxDecoration(
-                  color: _getTypeBackground(type),
+                  Flexible(
+                    child: SharedText(
+                      title: time,
+                      colorString: AppColors.moreColor,
+                      fontNum: 10,
+                      textOverflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
 
-                  borderRadius: BorderRadius.circular(20),
-                ),
+                const SizedBox(width: 10),
 
-                child: SharedText(
-                  title: type,
-                  colorString: _getTypeColor(type),
-                  fontNum: 10,
-                ),
-              ),
-
-              const Spacer(),
-            ],
-          ),
-          const SizedBox(height: 15),
-
-          Align(
-            alignment: AlignmentGeometry.centerStart,
-
-            child: Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  removeFavorite(message, t);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondaryColor,
-                  elevation: 3,
+                Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
+                    horizontal: 10,
+                    vertical: 5,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+
+                  decoration: BoxDecoration(
+                    color: _getTypeBackground(type),
+
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+
+                  child: SharedText(
+                    title: type == 'quote'
+                        ? t.quotes
+                        : type == 'message'
+                        ? t.messages
+                        : t.ayat,
+                    colorString: _getTypeColor(type),
+                    fontNum: 10,
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.favorite_rounded,
-                      color: AppColors.gold,
-                      size: 20,
-                    ),
 
-                    const SizedBox(width: 6),
+                const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 15),
 
-                    SharedText(
-                      title: t.unfavorite,
-                      colorString: AppColors.darkBlue,
-                      fontNum: 13,
-                      fontWeight: FontWeight.w600,
+            Align(
+              alignment: AlignmentGeometry.centerStart,
+
+              child: Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    removeFavorite(message, t);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondaryColor,
+                    elevation: 3,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
                     ),
-                  ],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.favorite_rounded,
+                        color: AppColors.gold,
+                        size: 20,
+                      ),
+
+                      const SizedBox(width: 6),
+
+                      SharedText(
+                        title: t.unfavorite,
+                        colorString: AppColors.darkBlue,
+                        fontNum: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
   // CATEGORY BUTTON
 
   Widget _buildCategoryButton({required String title, required int index}) {
@@ -582,5 +572,118 @@ class FavoritesScreenState extends State<FavoritesScreen> {
       default:
         return AppColors.primaryColor;
     }
+  }
+
+  // MESSAGE DETAILS POPUP
+  void _showMessageDialog(Map<String, dynamic> message, bool isArabic) {
+    final String type = message['type']?.toString().trim() ?? '';
+    final String text = isArabic
+        ? (message['textAr'] ?? '').toString()
+        : (message['textEn'] ?? '').toString();
+    final String date = message['date']?.toString() ?? '';
+    final String time = message['time']?.toString() ?? '';
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Directionality(
+          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+          child: Dialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _getTypeBackground(type),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: SharedText(
+                            title: type,
+                            colorString: _getTypeColor(type),
+                            fontNum: 18,
+                            fontWeight: FontWeight.w600,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: AppColors.moreColor,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // FULL MESSAGE TEXT
+                  SingleChildScrollView(
+                    child: SharedText(
+                      title: text,
+                      colorString: AppColors.darkBlue,
+                      fontNum: 16,
+                      fontWeight: FontWeight.w500,
+                      textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                      maxLines: 100,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 13,
+                        color: AppColors.moreColor,
+                      ),
+                      const SizedBox(width: 5),
+                      SharedText(
+                        title: date,
+                        colorString: AppColors.secondaryText,
+                        fontNum: 10,
+                      ),
+                      if (time.isNotEmpty) ...[
+                        const SizedBox(width: 6),
+                        const Text(
+                          '•',
+                          style: TextStyle(
+                            color: AppColors.moreColor,
+                            fontSize: 10,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        SharedText(
+                          title: time,
+                          colorString: AppColors.secondaryText,
+                          fontNum: 10,
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

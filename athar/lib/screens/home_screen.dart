@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:athar/services/auth_service.dart';
 import '../l10n/app_localizations.dart';
@@ -22,7 +22,9 @@ class _HomepageState extends State<Homepage> {
   final AuthService _authService = AuthService();
 
   String userName = '';
+  Map<String, dynamic>? messages;
   Map<String, dynamic>? todayMessage;
+  Map<String, dynamic>? reminderMessage;
 
   bool isLoadingMessage = true;
   bool isFav = false;
@@ -33,6 +35,7 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     _loadUserData();
     _loadRandomMessage();
+    _loadReminderMessage();
   }
 
   Future<void> _loadUserData() async {
@@ -48,7 +51,6 @@ class _HomepageState extends State<Homepage> {
   // Get random message
   Future<void> _loadRandomMessage() async {
     if (!mounted) return;
-
     setState(() {
       isLoadingMessage = true;
     });
@@ -130,6 +132,34 @@ class _HomepageState extends State<Homepage> {
     }
   }
 
+  // Get reminder message
+
+  Future<void> _loadReminderMessage() async {
+    if (!mounted) return;
+    setState(() {
+      isLoadingMessage = true;
+    });
+
+    try {
+      final newMessage = await _authService.getReminderMessage();
+
+      if (!mounted) return;
+
+      setState(() {
+        reminderMessage = newMessage;
+        isLoadingMessage = false;
+      });
+      return;
+    } catch (e) {
+      debugPrint('Error loading random message: $e');
+      if (!mounted) return;
+
+      setState(() {
+        isLoadingMessage = false;
+      });
+    }
+  }
+
   // Called by RefreshIndicator when the user pulls down to refresh
   Future<void> _handleRefresh() async {
     await Future.wait([_loadUserData(), _loadRandomMessage()]);
@@ -158,7 +188,9 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic =
+        Localizations.localeOf(context).languageCode ==
+        'ar'; // TODO: make it a global var
 
     final DateTime now = DateTime.now();
     final int hour = now.hour;
@@ -384,7 +416,8 @@ class _HomepageState extends State<Homepage> {
               children: [
                 IconButton(
                   onPressed: () {},
-                  style: IconButton.styleFrom(
+                  // TODO: handle notifications
+                  /*style: IconButton.styleFrom(
                     backgroundColor: Colors.white,
                     elevation: 5,
                     shape: const CircleBorder(),
@@ -392,20 +425,21 @@ class _HomepageState extends State<Homepage> {
                     minimumSize: const Size(40, 40),
                     fixedSize: const Size(40, 40),
                   ),
+                  */
                   icon: const Icon(
                     Icons.notifications_outlined,
-                    size: 27,
+                    size: 35,
                     color: Colors.black,
                   ),
                 ),
 
                 if (haveNotification)
                   Positioned(
-                    top: 9,
-                    right: 9,
+                    top: 11,
+                    right: 11,
                     child: Container(
-                      width: 9,
-                      height: 9,
+                      width: 10,
+                      height: 10,
                       decoration: const BoxDecoration(
                         color: AppColors.gold,
                         shape: BoxShape.circle,
@@ -532,7 +566,9 @@ class _HomepageState extends State<Homepage> {
                                 Row(
                                   children: [
                                     Container(
-                                      width: 125,
+                                      width:
+                                          MediaQuery.of(context).size.width *
+                                          0.35,
                                       height: 1.5,
                                       color: AppColors.lightGold,
                                     ),
@@ -593,39 +629,64 @@ class _HomepageState extends State<Homepage> {
                             color: AppColors.favButtonBackground,
                             shape: BoxShape.circle,
                           ),
-                          child: IconButton(
-                            onPressed: todayMessage == null
-                                ? null
-                                : () async {
-                                    final messageId = todayMessage!['messageId']
-                                        .toString();
 
-                                    try {
-                                      if (isFav) {
-                                        await _authService
-                                            .removeFavoriteMessage(messageId);
-                                      } else {
-                                        await _authService.addFavoriteMessage(
-                                          messageId,
-                                          todayMessage!,
+                          child: Expanded(
+                            child: ElevatedButton(
+                              onPressed: todayMessage == null
+                                  ? null
+                                  : () async {
+                                      final messageId =
+                                          todayMessage!['messageId'].toString();
+                                      try {
+                                        if (isFav) {
+                                          await _authService
+                                              .removeFavoriteMessage(messageId);
+                                        } else {
+                                          await _authService.addFavoriteMessage(
+                                            messageId,
+                                            todayMessage!,
+                                          );
+                                        }
+                                        if (!mounted) return;
+                                        setState(() {
+                                          isFav = !isFav;
+                                        });
+                                        final message = isFav
+                                            ? t.messageAddedToFavorites
+                                            : t.messageRemovedFromFavorites;
+
+                                        SharedSnackBar.showSuccess(
+                                          context: context,
+                                          message: message,
+                                        );
+                                      } catch (e) {
+                                        debugPrint(
+                                          'Error changing favorite: $e',
                                         );
                                       }
-
-                                      if (!mounted) return;
-
-                                      setState(() {
-                                        isFav = !isFav;
-                                      });
-                                    } catch (e) {
-                                      debugPrint('Error changing favorite: $e');
-                                    }
-                                  },
-                            icon: Icon(
-                              isFav
-                                  ? Icons.favorite_rounded
-                                  : Icons.favorite_outline,
-                              color: AppColors.gold,
-                              size: 22,
+                                    },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.secondaryColor,
+                                elevation: 7,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 5,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(27),
+                                ),
+                              ),
+                              child: isFav
+                                  ? Icon(
+                                      Icons.favorite_rounded,
+                                      color: AppColors.gold,
+                                      size: 25,
+                                    )
+                                  : Icon(
+                                      Icons.favorite_outline,
+                                      color: AppColors.gold,
+                                      size: 25,
+                                    ),
                             ),
                           ),
                         ),
@@ -656,7 +717,7 @@ class _HomepageState extends State<Homepage> {
                             onTap: () {
                               Navigator.pushNamed(context, '/schedule-message');
                             },
-                          ), // aabdalqader@staff.alquds.edu 30122002Alaa@#
+                          ),
                           QuickActionCard(
                             image: 'assets/images/random.png',
                             title: t.randomTime,
@@ -696,9 +757,6 @@ class _HomepageState extends State<Homepage> {
                       SectionHeader(title: t.reminder),
                       const SizedBox(height: 10),
                       Container(
-                        constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height * 0.12,
-                        ),
                         width: double.infinity,
                         padding: const EdgeInsetsDirectional.only(
                           start: 5,
@@ -724,14 +782,44 @@ class _HomepageState extends State<Homepage> {
                               height: 75,
                             ),
                             const SizedBox(width: 10),
-                            Expanded(
-                              child: SharedText(
-                                // TODO: get reminder messgae from message collection where type == reminder
-                                title: t.reminderMessage,
-                                colorString: Colors.black,
-                                fontNum: 13,
+                            if (isLoadingMessage)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: CircularProgressIndicator(
+                                  color: AppColors.lightGold,
+                                ),
+                              )
+                            else if (reminderMessage == null)
+                              Expanded(
+                                child: SharedText(
+                                  title: t.reminderMessage,
+                                  colorString: Colors.black,
+                                  fontNum: 13,
+                                  textAlign: TextAlign.start,
+                                  shadow: const [
+                                    Shadow(color: Colors.white, blurRadius: 30),
+                                  ],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            else
+                              Expanded(
+                                child: SharedText(
+                                  title: isArabic
+                                      ? (reminderMessage!['arabic'] ?? '')
+                                            .toString()
+                                      : (reminderMessage!['english'] ?? '')
+                                            .toString(),
+                                  colorString: Colors.black,
+                                  fontNum: 13,
+                                  textAlign: TextAlign.start,
+                                  shadow: const [
+                                    Shadow(color: Colors.white, blurRadius: 30),
+                                  ],
+                                  fontWeight: FontWeight.bold,
+                                  maxLines: 2,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../l10n/app_localizations.dart';
 import '../services/random_message_service.dart';
 import '../widgets/shared_text.dart';
+import '../widgets/shared_snack_bar.dart';
 import '../theme/app_colors.dart';
 
 class ScheduleMessagePage extends StatefulWidget {
@@ -15,12 +17,10 @@ class ScheduleMessagePage extends StatefulWidget {
 class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   final TextEditingController _messageController = TextEditingController();
   final FocusNode _messageFocus = FocusNode();
-
   final RandomMessageService _messageService = RandomMessageService();
 
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
-
   bool _isScheduling = false;
 
   static const int _maxChars = 500;
@@ -28,7 +28,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   @override
   void initState() {
     super.initState();
-
     _messageController.addListener(_refresh);
     _messageFocus.addListener(_refresh);
   }
@@ -43,10 +42,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   void dispose() {
     _messageController.removeListener(_refresh);
     _messageFocus.removeListener(_refresh);
-
     _messageController.dispose();
     _messageFocus.dispose();
-
     super.dispose();
   }
 
@@ -58,7 +55,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
     if (_selectedDate == null || _selectedTime == null) {
       return null;
     }
-
     return DateTime(
       _selectedDate!.year,
       _selectedDate!.month,
@@ -72,7 +68,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
       _messageController.text.trim().isNotEmpty ||
       _selectedDate != null ||
       _selectedTime != null;
-
   String _getCountdownText(AppLocalizations t) {
     final dt = _scheduledDateTime;
 
@@ -117,7 +112,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         onPrimary: Colors.white,
         surface: Colors.white,
         onSurface: AppColors.darkBlue,
-      ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+      ),
+      dialogTheme: DialogThemeData(backgroundColor: Colors.white),
     );
   }
 
@@ -127,7 +123,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
   Future<void> _selectDate() async {
     final now = DateTime.now();
-
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate ?? now,
@@ -175,32 +170,41 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   // Schedule Message
   // =====================================================
 
-  Future<void> _scheduleMessage() async {
+  Future<void> _scheduleMessage(AppLocalizations t) async {
     FocusScope.of(context).unfocus();
 
-    final t = AppLocalizations.of(context)!;
-
     final message = _messageController.text.trim();
-
     if (message.isEmpty) {
-      _showMessage(t.writeYourMessageFirst);
+      SharedSnackBar.showError(
+        context: context,
+        message: t.writeYourMessageFirst,
+      );
       return;
     }
 
     if (_selectedDate == null) {
-      _showMessage(t.chooseTheDateItShouldArrive);
+      SharedSnackBar.showError(
+        context: context,
+        message: t.chooseTheDateItShouldArrive,
+      );
       return;
     }
 
     if (_selectedTime == null) {
-      _showMessage(t.chooseTheTimeItShouldArrive);
+      SharedSnackBar.showError(
+        context: context,
+        message: t.chooseTheTimeItShouldArrive,
+      );
       return;
     }
 
     final scheduledDateTime = _scheduledDateTime!;
 
     if (scheduledDateTime.isBefore(DateTime.now())) {
-      _showMessage(t.thatTimeHasPassedPickALaterOne);
+      SharedSnackBar.showError(
+        context: context,
+        message: t.thatTimeHasPassedPickALaterOne,
+      );
       return;
     }
 
@@ -220,7 +224,10 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         _isScheduling = false;
       });
 
-      _showSuccessMessage();
+      SharedSnackBar.showSuccess(
+        context: context,
+        message: t.scheduledItWillReachYouOnTime,
+      );
     } catch (e) {
       if (!mounted) return;
 
@@ -228,57 +235,11 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         _isScheduling = false;
       });
 
-      _showMessage(t.messageWasNotSavedTryAgain);
-    }
-  }
-
-  // =====================================================
-  // Snack Bars
-  // =====================================================
-
-  void _showSnack(String message, Color background, IconData icon) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: background,
-          margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          content: Row(
-            children: [
-              Icon(icon, color: AppColors.gold, size: 20),
-
-              const SizedBox(width: 10),
-
-              Expanded(
-                child: SharedText(
-                  title: message,
-                  colorString: Colors.white,
-                  fontNum: 14,
-                  textOverflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
+      SharedSnackBar.showError(
+        context: context,
+        message: t.messageWasNotSavedTryAgain,
       );
-  }
-
-  void _showMessage(String message) {
-    _showSnack(message, AppColors.darkBlue, Icons.info_outline_rounded);
-  }
-
-  void _showSuccessMessage() {
-    final t = AppLocalizations.of(context)!;
-
-    _showSnack(
-      t.scheduledItWillReachYouOnTime,
-      const Color(0xFF1B5E20),
-      Icons.check_circle_outline_rounded,
-    );
+    }
   }
 
   // =====================================================
@@ -299,7 +260,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
     if (_selectedTime == null) {
       return t.notSet;
     }
-
     return _selectedTime!.format(context);
   }
 
@@ -310,6 +270,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -319,7 +280,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-
         leading: IconButton(
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/home');
@@ -353,35 +313,22 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               FocusScope.of(context).unfocus();
             },
             behavior: HitTestBehavior.opaque,
-
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 36),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildHeader(t),
-
                   const SizedBox(height: 26),
-
                   _buildSectionTitle(t.yourMessage, t.onlyYouWillReadIt),
-
                   const SizedBox(height: 10),
-
-                  _buildMessageField(t),
-
+                  _buildMessageField(t, isArabic),
                   const SizedBox(height: 26),
-
                   _buildSectionTitle(t.deliveryTime, t.pickAMomentInTheFuture),
-
                   const SizedBox(height: 10),
-
                   _buildQuickPicks(t),
-
                   const SizedBox(height: 12),
-
                   Row(
                     children: [
                       Expanded(
@@ -395,7 +342,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                       ),
 
                       const SizedBox(width: 12),
-
                       Expanded(
                         child: _buildSelectionCard(
                           icon: Icons.access_time_rounded,
@@ -422,7 +368,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                   ),
 
                   const SizedBox(height: 28),
-
                   _buildScheduleButton(t),
                 ],
               ),
@@ -440,10 +385,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   Widget _buildHeader(AppLocalizations t) {
     return Container(
       padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
-
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -464,18 +407,16 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
           Container(
             width: 64,
             height: 64,
-
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white.withValues(alpha: 0.08),
-
               border: Border.all(color: AppColors.gold, width: 1.6),
             ),
 
             child: const Icon(
               Icons.schedule_rounded,
               size: 32,
-              color: AppColors.gold,
+              color: Colors.white,
             ),
           ),
 
@@ -509,24 +450,20 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   Widget _buildSectionTitle(String title, String subtitle) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-
       children: [
         Container(
           width: 4,
           height: 34,
-
           margin: const EdgeInsets.only(top: 2, right: 10),
-
           decoration: BoxDecoration(
             color: AppColors.gold,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
-
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
               SharedText(
                 title: title,
@@ -534,9 +471,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                 fontNum: 17,
                 fontWeight: FontWeight.bold,
               ),
-
               const SizedBox(height: 2),
-
               SharedText(
                 title: subtitle,
                 colorString: AppColors.darkBlue.withValues(alpha: 0.55),
@@ -553,20 +488,16 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   // Message Field
   // =====================================================
 
-  Widget _buildMessageField(AppLocalizations t) {
+  Widget _buildMessageField(AppLocalizations t, bool isArabic) {
     final focused = _messageFocus.hasFocus;
-
     final length = _messageController.text.characters.length;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
-
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-
         border: Border.all(
           color: focused ? AppColors.darkBlue : AppColors.gold,
           width: focused ? 1.6 : 1.0,
@@ -585,49 +516,33 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-
         children: [
           TextField(
             controller: _messageController,
             focusNode: _messageFocus,
-
             maxLines: 7,
             minLines: 5,
             maxLength: _maxChars,
-
             textInputAction: TextInputAction.newline,
-
             textAlignVertical: TextAlignVertical.top,
-
             cursorColor: AppColors.darkBlue,
-
-            style: TextStyle(
-              color: AppColors.darkBlue,
-              fontSize: 15,
-              height: 1.5,
-
-              fontFamily: Localizations.localeOf(context).languageCode == 'ar'
-                  ? 'Almarai'
-                  : 'Alike',
+            style: GoogleFonts.getFont(
+              isArabic ? 'Almarai' : 'Alike',
+              textStyle: const TextStyle(
+                color: AppColors.darkBlue,
+                fontSize: 15,
+              ),
             ),
 
             decoration: InputDecoration(
               counterText: '',
-
               hintText: t.whatDoYouWantToRemember,
-
-              hintStyle: TextStyle(
-                color: AppColors.darkBlue.withValues(alpha: 0.35),
-
-                fontSize: 14.5,
-
-                fontFamily: Localizations.localeOf(context).languageCode == 'ar'
-                    ? 'Almarai'
-                    : 'Alike',
+              hintStyle: GoogleFonts.getFont(
+                isArabic ? 'Almarai' : 'Alike',
+                textStyle: const TextStyle(color: Colors.grey, fontSize: 13),
               ),
 
               border: InputBorder.none,
-
               contentPadding: const EdgeInsets.symmetric(vertical: 12),
             ),
           ),
@@ -658,23 +573,15 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
     return SizedBox(
       height: 38,
-
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-
         physics: const BouncingScrollPhysics(),
-
         itemCount: options.length,
-
         separatorBuilder: (_, _) => const SizedBox(width: 8),
-
         itemBuilder: (context, index) {
           final label = options.keys.elementAt(index);
-
           final duration = options.values.elementAt(index);
-
           final target = DateTime.now().add(duration);
-
           final isActive =
               _selectedDate != null &&
               _selectedDate!.year == target.year &&
@@ -687,19 +594,13 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
             },
 
             borderRadius: BorderRadius.circular(30),
-
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 160),
-
               padding: const EdgeInsets.symmetric(horizontal: 16),
-
               alignment: Alignment.center,
-
               decoration: BoxDecoration(
                 color: isActive ? AppColors.darkBlue : Colors.white,
-
                 borderRadius: BorderRadius.circular(30),
-
                 border: Border.all(
                   color: isActive ? AppColors.darkBlue : AppColors.gold,
                 ),
@@ -707,11 +608,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
               child: SharedText(
                 title: label,
-
                 colorString: isActive ? AppColors.gold : AppColors.darkBlue,
-
                 fontNum: 13,
-
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -734,27 +632,21 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   }) {
     return InkWell(
       onTap: onTap,
-
       borderRadius: BorderRadius.circular(18),
-
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-
         padding: const EdgeInsets.all(15),
-
         decoration: BoxDecoration(
-          color: isSet ? AppColors.goldTrans.withValues(alpha: 0.30) : Colors.white,
+          color: isSet
+              ? AppColors.goldTrans.withValues(alpha: 0.30)
+              : Colors.white,
 
           borderRadius: BorderRadius.circular(18),
-
           border: Border.all(color: AppColors.gold, width: isSet ? 1.5 : 1.0),
-
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
-
               blurRadius: 10,
-
               offset: const Offset(0, 5),
             ),
           ],
@@ -762,14 +654,11 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: [
             Row(
               children: [
                 Icon(icon, color: AppColors.darkBlue, size: 20),
-
                 const SizedBox(width: 7),
-
                 Expanded(
                   child: SharedText(
                     title: title,
@@ -778,7 +667,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 Icon(
                   Icons.expand_more_rounded,
                   size: 18,
@@ -788,16 +676,12 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
             ),
 
             const SizedBox(height: 10),
-
             SharedText(
               title: value,
-
               colorString: isSet
                   ? AppColors.darkBlue
                   : AppColors.darkBlue.withValues(alpha: 0.4),
-
               fontNum: 15,
-
               fontWeight: isSet ? FontWeight.bold : FontWeight.w500,
             ),
           ],
@@ -815,20 +699,14 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
     return Container(
       padding: const EdgeInsets.all(18),
-
       decoration: BoxDecoration(
         color: Colors.white,
-
         borderRadius: BorderRadius.circular(20),
-
         border: Border.all(color: AppColors.gold),
-
         boxShadow: [
           BoxShadow(
             color: AppColors.goldTrans,
-
             blurRadius: 16,
-
             offset: const Offset(0, 6),
           ),
         ],
@@ -845,9 +723,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                 color: AppColors.darkBlue,
                 size: 19,
               ),
-
               const SizedBox(width: 7),
-
               SharedText(
                 title: t.preview,
                 colorString: AppColors.darkBlue,
@@ -856,52 +732,38 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               ),
 
               const Spacer(),
-
               SharedText(
                 title: '${_getDateText(t)}  ·  ${_getTimeText(t)}',
-
                 colorString: AppColors.darkBlue.withValues(alpha: 0.6),
-
                 fontNum: 12,
-
                 fontWeight: FontWeight.w600,
-
                 textOverflow: TextOverflow.ellipsis,
               ),
             ],
           ),
 
           const SizedBox(height: 14),
-
           // Message bubble
           Container(
             width: double.infinity,
-
             padding: const EdgeInsets.all(14),
-
             decoration: BoxDecoration(
               color: AppColors.primaryColor,
-
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
-
                 topRight: Radius.circular(16),
-
                 bottomRight: Radius.circular(16),
-
                 bottomLeft: Radius.circular(4),
               ),
             ),
 
             child: SharedText(
               title: message.isEmpty ? t.yourMessageWillAppearHere : message,
-
               colorString: message.isEmpty
                   ? AppColors.darkBlue.withValues(alpha: 0.4)
                   : AppColors.darkBlue,
 
               fontNum: 14,
-
               textOverflow: TextOverflow.ellipsis,
             ),
           ),
@@ -921,11 +783,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               Expanded(
                 child: SharedText(
                   title: _getCountdownText(t),
-
                   colorString: AppColors.darkBlue,
-
                   fontNum: 13,
-
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -947,7 +806,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-
           boxShadow: _isScheduling
               ? const []
               : [
@@ -962,18 +820,14 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         ),
 
         child: ElevatedButton.icon(
-          onPressed: _isScheduling ? null : _scheduleMessage,
+          onPressed:()=> _isScheduling ? null : _scheduleMessage(t),
 
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.darkBlue,
-
             disabledBackgroundColor: AppColors.darkBlue.withValues(alpha: 0.45),
-
             elevation: 0,
-
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-
               side: const BorderSide(color: AppColors.gold, width: 1.2),
             ),
           ),
@@ -982,7 +836,6 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
               ? const SizedBox(
                   width: 19,
                   height: 19,
-
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: AppColors.gold,
@@ -992,11 +845,8 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
           label: SharedText(
             title: _isScheduling ? t.scheduling : t.scheduleMessageButton,
-
             colorString: Colors.white,
-
             fontNum: 16,
-
             fontWeight: FontWeight.bold,
           ),
         ),

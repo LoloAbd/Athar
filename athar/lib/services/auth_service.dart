@@ -632,75 +632,6 @@ class AuthService {
   }
 
   // ============================================================
-  // ADD MESSAGE TO HISTORY IF NOT EXISTS
-  // ============================================================
-  /*Future<bool> addToHistoryIfNotExists(String messageId) async {
-    final user = _auth.currentUser;
-    if (user == null) return false;
-
-    final historyRef = _firestore
-        .collection('user')
-        .doc(user.uid)
-        .collection('history')
-        .doc(messageId);
-
-    final historyDoc = await historyRef.get();
-    if (historyDoc.exists) return false;
-
-    await historyRef.set({
-      'messageId': messageId,
-      'viewedAt': Timestamp.now(), // تم تصليح الخطأ هنا
-    });
-
-    return true;
-  }*/
-
-  // ============================================================
-  // GET HISTORY MESSAGE IDS
-  // ============================================================
-  /*Future<Set<String>> getHistoryMessageIds() async {
-    final user = _auth.currentUser;
-    if (user == null) return {};
-
-    final snapshot = await _firestore
-        .collection('user')
-        .doc(user.uid)
-        .collection('history')
-        .get();
-
-    return snapshot.docs.map((doc) => doc.id).toSet();
-  }*/
-
-  // ============================================================
-  // CAN GET RANDOM MESSAGE (Time Check)
-  // ============================================================
-  /*Future<bool> canGetRandomMessage() async {
-    final user = _auth.currentUser;
-    if (user == null) return false;
-
-    final historySnapshot = await _firestore
-        .collection('user')
-        .doc(user.uid)
-        .collection('history')
-        .orderBy('viewedAt', descending: true)
-        .limit(1)
-        .get();
-
-    if (historySnapshot.docs.isEmpty) return true;
-
-    final data = historySnapshot.docs.first.data();
-    final nextAvailableAt = data['nextAvailableAt'];
-
-    if (nextAvailableAt is! Timestamp) return true;
-
-    final now = DateTime.now();
-    final availableTime = nextAvailableAt.toDate();
-
-    return now.isAfter(availableTime) || now.isAtSameMomentAs(availableTime);
-  }
-*/
-
-  // ============================================================
   // GET LATEST HISTORY MESSAGE
   // ============================================================
   Future<Map<String, dynamic>?> getLatestHistoryMessage() async {
@@ -752,5 +683,20 @@ class AuthService {
       print('Error getting latest history message: $e');
       return null;
     }
+  }
+
+  // ============================================================
+  // GET RANDOM MESSAGE
+  // ============================================================
+  Future<Map<String, dynamic>?> getReminderMessage() async {
+    final remindersSnapshot = await _firestore.collection('reminders').get();
+    if (remindersSnapshot.docs.isEmpty) {
+      return null;
+    }
+    final random = Random();
+    final selectedDoc =
+        remindersSnapshot.docs[random.nextInt(remindersSnapshot.docs.length)];
+    final messageData = selectedDoc.data();
+    return {...messageData};
   }
 }

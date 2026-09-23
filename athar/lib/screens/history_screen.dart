@@ -232,7 +232,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                         itemBuilder: (context, index) {
                           final message = filteredHistory[index];
 
-                          return _buildHistoryCard(message, isArabic);
+                          return _buildHistoryCard(message, isArabic, t);
                         },
                       )
                     : _buildEmptyHistory(t),
@@ -245,7 +245,11 @@ class HistoryScreenState extends State<HistoryScreen> {
   }
 
   // HISTORY CARD
-  Widget _buildHistoryCard(Map<String, dynamic> message, bool isArabic) {
+  Widget _buildHistoryCard(
+    Map<String, dynamic> message,
+    bool isArabic,
+    AppLocalizations t,
+  ) {
     final String type = message['type']?.toString().trim() ?? '';
     final String text = isArabic
         ? (message['textAr'] ?? '').toString()
@@ -308,7 +312,11 @@ class HistoryScreenState extends State<HistoryScreen> {
                         ),
 
                         child: SharedText(
-                          title: type,
+                          title: type == 'quote'
+                              ? t.quotes
+                              : type == 'message'
+                              ? t.messages
+                              : t.ayat,
                           colorString: _getTypeColor(type),
                           fontNum: 10,
                           fontWeight: FontWeight.w600,
@@ -647,4 +655,7 @@ class HistoryScreenState extends State<HistoryScreen> {
       },
     );
   }
+
+
+
 }

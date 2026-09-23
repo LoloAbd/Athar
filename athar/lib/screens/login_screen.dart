@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../widgets/shared_text.dart';
 import '../widgets/text_form_field.dart';
 import '../theme/app_colors.dart';
+import '../widgets/shared_snack_bar.dart';
 
 class LoginPage extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
@@ -28,7 +29,8 @@ class _LoginPageState extends State<LoginPage> {
   bool isPasswordVisible = false;
   bool _rememberMe = false;
   bool _isLoading = false;
-  Future<void> _handleGoogleLogin() async {
+
+  Future<void> _handleGoogleLogin(AppLocalizations t) async {
     setState(() {
       _isLoading = true;
     });
@@ -42,18 +44,9 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
 
     if (result.credential != null) {
-      // نجح تسجيل الدخول
       Navigator.pushReplacementNamed(context, '/home');
-    } else if (result.accountNotFound) {
-      // ما في حساب بهذا الإيميل -> حوّله لصفحة إنشاء حساب
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message ?? 'لا يوجد حساب بهذا البريد')),
-      );
-      Navigator.pushReplacementNamed(context, '/signup');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message ?? 'فشل تسجيل الدخول')),
-      );
+      SharedSnackBar.showError(context: context, message: t.faildlogin);
     }
   }
 
@@ -96,9 +89,7 @@ class _LoginPageState extends State<LoginPage> {
   // Login
   // =====================================================
 
-  Future<void> _handleLogin() async {
-    final t = AppLocalizations.of(context)!;
-
+  Future<void> _handleLogin(AppLocalizations t) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -115,24 +106,17 @@ class _LoginPageState extends State<LoginPage> {
 
       if (_rememberMe) {
         await _storage.write(key: "remember_me", value: "true");
-
         await _storage.write(key: "email", value: emailController.text.trim());
       } else {
         await _storage.delete(key: "remember_me");
-
         await _storage.delete(key: "email");
       }
 
       if (!mounted) return;
 
-      // =====================================================
-      // Go To Home
-      // =====================================================
-
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-
       String message;
 
       switch (e.code) {
@@ -160,26 +144,17 @@ class _LoginPageState extends State<LoginPage> {
           message = t.faildlogin;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: const Color.fromARGB(255, 129, 27, 20),
-        ),
-      );
+      SharedSnackBar.showError(context: context, message: message);
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.faildlogin),
-          backgroundColor: const Color.fromARGB(255, 129, 27, 20),
-        ),
-      );
+      SharedSnackBar.showError(context: context, message: t.faildlogin);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -216,16 +191,9 @@ class _LoginPageState extends State<LoginPage> {
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       child: IconButton(
-                        onPressed: () {
-                          final currentLanguage = Localizations.localeOf(
-                            context,
-                          ).languageCode;
-                          if (currentLanguage == 'en') {
-                            widget.onLanguageChanged(const Locale('ar'));
-                          } else {
-                            widget.onLanguageChanged(const Locale('en'));
-                          }
-                        },
+                        onPressed: () => isArabic
+                            ? widget.onLanguageChanged(const Locale('en'))
+                            : widget.onLanguageChanged(const Locale('ar')),
                         icon: const ImageIcon(
                           AssetImage('assets/images/translation.png'),
                           size: 30,
@@ -343,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 2.5),
 
                     ElevatedButton.icon(
-                      onPressed: _handleLogin,
+                      onPressed: () => _handleLogin(t),
                       style: ElevatedButton.styleFrom(
                         elevation: 7,
                         minimumSize: const Size(70, 40),
@@ -380,7 +348,7 @@ class _LoginPageState extends State<LoginPage> {
                     _isLoading
                         ? CircularProgressIndicator(color: AppColors.gold)
                         : ElevatedButton.icon(
-                            onPressed: _handleGoogleLogin,
+                            onPressed: () => _handleGoogleLogin(t),
                             style: ElevatedButton.styleFrom(
                               elevation: 7,
                               minimumSize: Size(70, 40),

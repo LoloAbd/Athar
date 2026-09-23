@@ -23,6 +23,7 @@ Future<void> main() async {
     serverClientId:
         '988731721904-7rb1s33r7veg1m71355bgndkc5c2snjk.apps.googleusercontent.com',
   );
+
   runApp(const Main());
 }
 
