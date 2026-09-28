@@ -7,11 +7,17 @@ import '../widgets/shared_text.dart';
 import '../widgets/text_form_field.dart';
 import '../theme/app_colors.dart';
 import '../widgets/shared_snack_bar.dart';
+import '../app_locale.dart' as app_locale;
 
 class LoginPage extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
+  final bool isArabic;
 
-  const LoginPage({super.key, required this.onLanguageChanged});
+  const LoginPage({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -154,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = app_locale.isArabic;
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -194,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () => isArabic
                             ? widget.onLanguageChanged(const Locale('en'))
                             : widget.onLanguageChanged(const Locale('ar')),
-                        icon: const ImageIcon(
+                        icon: ImageIcon(
                           AssetImage('assets/images/translation.png'),
                           size: 30,
                           color: AppColors.gold,
@@ -223,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 5),
                     DecoratedBox(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.goldTrans,
@@ -277,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 activeColor: AppColors.darkBlue,
                                 checkColor: Colors.white,
-                                side: const BorderSide(
+                                side: BorderSide(
                                   color: AppColors.gold,
                                   width: 2,
                                 ),

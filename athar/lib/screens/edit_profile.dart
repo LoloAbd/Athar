@@ -88,7 +88,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         message: t.profileUpdatedSuccessfully,
       );
-      
+
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       debugPrint('Error updating profile: $e');
@@ -140,9 +140,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
 
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.gold),
-            )
+          ? Center(child: CircularProgressIndicator(color: AppColors.gold))
           : SafeArea(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -197,13 +195,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       Container(
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.secondaryColor,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
                             color: AppColors.favBordar,
                             width: 1,
                           ),
-                          boxShadow: const [
+                          boxShadow: [
                             BoxShadow(
                               color: AppColors.favBoxShadow,
                               blurRadius: 20,
@@ -278,16 +276,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             TextFormField(
                               initialValue: _email,
                               enabled: false,
-                              style: const TextStyle(
-                                color: AppColors.secondaryText,
-                              ),
+                              style: TextStyle(color: AppColors.secondaryText),
                               decoration:
                                   _inputDecoration(
                                     icon: Icons.email_outlined,
                                   ).copyWith(
                                     filled: true,
                                     fillColor: AppColors.emptyFavBackground,
-                                    suffixIcon: const Icon(
+                                    suffixIcon: Icon(
                                       Icons.lock_outline_rounded,
                                       color: AppColors.secondaryText,
                                       size: 20,
@@ -301,7 +297,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               alignment: AlignmentDirectional.centerStart,
                               child: Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.info_outline_rounded,
                                     size: 15,
                                     color: AppColors.secondaryText,
@@ -345,7 +341,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                           ),
                           child: _isSaving
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 23,
                                   height: 23,
                                   child: CircularProgressIndicator(
@@ -356,7 +352,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.check_rounded,
                                       color: AppColors.darkBlue,
                                       size: 22,
@@ -403,7 +399,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: AppColors.gold, width: 1.6),
+        borderSide: BorderSide(color: AppColors.gold, width: 1.6),
       ),
 
       errorBorder: OutlineInputBorder(

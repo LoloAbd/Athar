@@ -8,7 +8,8 @@ import '../widgets/shared_snack_bar.dart';
 import '../theme/app_colors.dart';
 
 class ScheduleMessagePage extends StatefulWidget {
-  const ScheduleMessagePage({super.key});
+  final bool isArabic;
+  const ScheduleMessagePage({super.key, required this.isArabic});
 
   @override
   State<ScheduleMessagePage> createState() => _ScheduleMessagePageState();
@@ -107,13 +108,13 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
   ThemeData _pickerTheme(BuildContext context) {
     return Theme.of(context).copyWith(
-      colorScheme: const ColorScheme.light(
+      colorScheme: ColorScheme.light(
         primary: AppColors.darkBlue,
         onPrimary: Colors.white,
-        surface: Colors.white,
+        surface: AppColors.secondaryColor,
         onSurface: AppColors.darkBlue,
       ),
-      dialogTheme: DialogThemeData(backgroundColor: Colors.white),
+      dialogTheme: DialogThemeData(backgroundColor: AppColors.secondaryColor),
     );
   }
 
@@ -270,7 +271,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = widget.isArabic;
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -294,15 +295,15 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
           fontWeight: FontWeight.bold,
         ),
 
-        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+        iconTheme: IconThemeData(color: AppColors.darkBlue),
       ),
 
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.primaryColor, Colors.white],
+            colors: [AppColors.primaryColor, AppColors.secondaryColor],
             stops: [0.0, 0.75],
           ),
         ),
@@ -387,7 +388,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
       padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppColors.darkBlue, Color(0xFF16305A)],
@@ -496,7 +497,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
       duration: const Duration(milliseconds: 180),
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.secondaryColor,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: focused ? AppColors.darkBlue : AppColors.gold,
@@ -528,10 +529,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
             cursorColor: AppColors.darkBlue,
             style: GoogleFonts.getFont(
               isArabic ? 'Almarai' : 'Alike',
-              textStyle: const TextStyle(
-                color: AppColors.darkBlue,
-                fontSize: 15,
-              ),
+              textStyle: TextStyle(color: AppColors.darkBlue, fontSize: 15),
             ),
 
             decoration: InputDecoration(
@@ -700,7 +698,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.secondaryColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.gold),
         boxShadow: [
@@ -718,7 +716,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.mark_email_unread_outlined,
                 color: AppColors.darkBlue,
                 size: 19,
@@ -772,7 +770,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
 
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.hourglass_bottom_rounded,
                 size: 17,
                 color: AppColors.darkBlue,
@@ -820,7 +818,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
         ),
 
         child: ElevatedButton.icon(
-          onPressed:()=> _isScheduling ? null : _scheduleMessage(t),
+          onPressed: () => _isScheduling ? null : _scheduleMessage(t),
 
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.darkBlue,
@@ -828,12 +826,12 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: AppColors.gold, width: 1.2),
+              side: BorderSide(color: AppColors.gold, width: 1.2),
             ),
           ),
 
           icon: _isScheduling
-              ? const SizedBox(
+              ? SizedBox(
                   width: 19,
                   height: 19,
                   child: CircularProgressIndicator(
@@ -841,7 +839,7 @@ class _ScheduleMessagePageState extends State<ScheduleMessagePage> {
                     color: AppColors.gold,
                   ),
                 )
-              : const Icon(Icons.schedule_send_rounded, color: AppColors.gold),
+              : Icon(Icons.schedule_send_rounded, color: AppColors.gold),
 
           label: SharedText(
             title: _isScheduling ? t.scheduling : t.scheduleMessageButton,

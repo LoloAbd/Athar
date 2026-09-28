@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:athar/services/auth_service.dart';
@@ -6,9 +8,9 @@ import '../widgets/shared_text.dart';
 import '../widgets/shared_snack_bar.dart';
 
 class FavoritesScreen extends StatefulWidget {
-  final Function(Locale) onLanguageChanged;
+  final bool isArabic;
 
-  const FavoritesScreen({super.key, required this.onLanguageChanged});
+  const FavoritesScreen({super.key, required this.isArabic});
 
   @override
   State<FavoritesScreen> createState() => FavoritesScreenState();
@@ -123,7 +125,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = widget.isArabic;
 
     final List<Map<String, dynamic>> filteredFavorites = getFilteredFavorites();
     final bool hasFilteredFavorites = filteredFavorites.isNotEmpty;
@@ -131,127 +133,137 @@ class FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
 
-      body: SafeArea(
-        child: Directionality(
-          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsetsDirectional.only(
-                    start: 15,
-                    end: 15,
-                    top: 25,
-                    bottom: 15,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SharedText(
-                        title: t.favoriteMessages,
-                        colorString: AppColors.darkBlue,
-                        fontNum: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              height: 1.5,
+      body: RefreshIndicator(
+        color: AppColors.gold,
+        onRefresh: loadFavorites,
+        child: SafeArea(
+          child: Directionality(
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsetsDirectional.only(
+                      start: 15,
+                      end: 15,
+                      top: 25,
+                      bottom: 15,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SharedText(
+                          title: t.favoriteMessages,
+                          colorString: AppColors.darkBlue,
+                          fontNum: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 1.5,
+                                color: AppColors.gold,
+                              ),
+                            ),
+                            const SizedBox(width: 7),
+                            Icon(
+                              Icons.auto_awesome,
+                              size: 22,
                               color: AppColors.gold,
                             ),
-                          ),
-                          const SizedBox(width: 7),
-                          const Icon(
-                            Icons.auto_awesome,
-                            size: 22,
-                            color: AppColors.gold,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsetsDirectional.only(start: 12, end: 12),
-                  padding: const EdgeInsets.all(5),
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryColor,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.favBordar, width: 1),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: AppColors.favBoxShadow,
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildCategoryButton(title: t.all, index: 0),
-                      ),
-
-                      const SizedBox(width: 5),
-
-                      Expanded(
-                        child: _buildCategoryButton(title: t.ayat, index: 1),
-                      ),
-
-                      const SizedBox(width: 5),
-
-                      Expanded(
-                        child: _buildCategoryButton(
-                          title: t.messages,
-                          index: 2,
+                          ],
                         ),
-                      ),
-
-                      const SizedBox(width: 5),
-
-                      Expanded(
-                        child: _buildCategoryButton(title: t.quotes, index: 3),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                if (isLoading)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 80),
-                    child: Center(
-                      child: CircularProgressIndicator(color: AppColors.gold),
-                    ),
-                  )
-                else if (!hasFilteredFavorites)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _buildEmptyFavorites(t),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: filteredFavorites
-                          .map(
-                            (message) =>
-                                _buildFavoriteCard(message, isArabic, t),
-                          )
-                          .toList(),
+                      ],
                     ),
                   ),
-                const SizedBox(height: 30),
-              ],
+
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsetsDirectional.only(
+                      start: 12,
+                      end: 12,
+                    ),
+                    padding: const EdgeInsets.all(5),
+                    height: 55,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.favBordar, width: 1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.favBoxShadow,
+                          blurRadius: 12,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildCategoryButton(title: t.all, index: 0),
+                        ),
+
+                        const SizedBox(width: 5),
+
+                        Expanded(
+                          child: _buildCategoryButton(title: t.ayat, index: 1),
+                        ),
+
+                        const SizedBox(width: 5),
+
+                        Expanded(
+                          child: _buildCategoryButton(
+                            title: t.messages,
+                            index: 2,
+                          ),
+                        ),
+
+                        const SizedBox(width: 5),
+
+                        Expanded(
+                          child: _buildCategoryButton(
+                            title: t.quotes,
+                            index: 3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  if (isLoading)
+                    Padding(
+                      padding: EdgeInsets.only(top: 80),
+                      child: Center(
+                        child: CircularProgressIndicator(color: AppColors.gold),
+                      ),
+                    )
+                  else if (!hasFilteredFavorites)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _buildEmptyFavorites(t),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: filteredFavorites
+                            .map(
+                              (message) =>
+                                  _buildFavoriteCard(message, isArabic, t),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ),
@@ -329,13 +341,13 @@ class FavoritesScreenState extends State<FavoritesScreen> {
         padding: const EdgeInsets.all(18),
 
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.secondaryColor,
 
           borderRadius: BorderRadius.circular(20),
 
           border: Border.all(color: AppColors.favBordar),
 
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
               color: AppColors.favBoxShadow,
               blurRadius: 14,
@@ -373,7 +385,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.calendar_today_outlined,
                   size: 14,
                   color: AppColors.moreColor,
@@ -392,7 +404,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
                 if (time.isNotEmpty) ...[
                   const SizedBox(width: 6),
-                  const Text(
+                  Text(
                     '•',
                     style: TextStyle(color: AppColors.moreColor, fontSize: 10),
                   ),
@@ -461,7 +473,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.favorite_rounded,
                         color: AppColors.gold,
                         size: 20,
@@ -509,7 +521,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
             color: isSelected ? AppColors.darkBlue : AppColors.primaryColor,
           ),
           boxShadow: isSelected
-              ? const [
+              ? [
                   BoxShadow(
                     color: AppColors.selectedCatButton,
                     blurRadius: 8,
@@ -532,7 +544,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
             if (isSelected) ...[
               const SizedBox(width: 4),
-              const Icon(Icons.favorite, size: 18, color: AppColors.gold),
+              Icon(Icons.favorite, size: 18, color: AppColors.gold),
             ],
           ],
         ),
@@ -590,7 +602,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
         return Directionality(
           textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
           child: Dialog(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.secondaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -623,7 +635,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.close_rounded,
                           color: AppColors.moreColor,
                         ),
@@ -649,7 +661,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
 
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_today_outlined,
                         size: 13,
                         color: AppColors.moreColor,
@@ -662,7 +674,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
                       ),
                       if (time.isNotEmpty) ...[
                         const SizedBox(width: 6),
-                        const Text(
+                        Text(
                           '•',
                           style: TextStyle(
                             color: AppColors.moreColor,

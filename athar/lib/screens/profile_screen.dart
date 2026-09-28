@@ -5,8 +5,7 @@ import '../theme/app_colors.dart';
 import '../widgets/shared_text.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Function(Locale) onLanguageChanged;
-  const ProfilePage({super.key, required this.onLanguageChanged});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -59,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: false,
+      backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         centerTitle: true,
@@ -94,7 +94,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      body: Container(
+      body: RefreshIndicator(
+        color: AppColors.gold,
+        onRefresh: () async { await Future.wait([loadUserData(), loadProfileStats()]); },
+        child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Container(
         color: AppColors.background,
         child: ClipPath(
           clipper: CurvedTopClipper(),
@@ -377,6 +382,8 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ),
+        ),
+      ),
       ),
     );
   }

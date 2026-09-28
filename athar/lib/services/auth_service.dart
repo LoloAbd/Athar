@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 
 class GoogleAuthResult {
   final UserCredential? credential;
@@ -111,15 +114,18 @@ class AuthService {
   // ============================================================
   Future<GoogleAuthResult> signInWithGoogle({required bool isSignUp}) async {
     try {
-      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
-
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
-
-      final String email = googleUser.email;
+      UserCredential? webCredential;
+      String email;
+      AuthCredential? credential;
+      if (kIsWeb) {
+        webCredential = await _auth.signInWithPopup(GoogleAuthProvider());
+        email = webCredential.user?.email ?? '';
+      } else {
+        final googleUser = await _googleSignIn.authenticate();
+        final googleAuth = googleUser.authentication;
+        credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+        email = googleUser.email;
+      }
 
       // فحص مسبق بالـ Firestore قبل أي تسجيل دخول فعلي
       final existingQuery = await _firestore
@@ -132,7 +138,11 @@ class AuthService {
 
       // حالة: يحاول إنشاء حساب لكن الإيميل مستخدم مسبقًا
       if (isSignUp && emailExists) {
-        await _googleSignIn.signOut();
+        if (kIsWeb) {
+          await _auth.signOut();
+        } else {
+          await _googleSignIn.signOut();
+        }
         return GoogleAuthResult(
           emailAlreadyExists: true,
           // message: 'هذا البريد الإلكتروني مستخدم مسبقًا، الرجاء تسجيل الدخول.',
@@ -141,7 +151,11 @@ class AuthService {
 
       // حالة: يحاول تسجيل الدخول لكن ما في حساب أصلاً
       if (!isSignUp && !emailExists) {
-        await _googleSignIn.signOut();
+        if (kIsWeb) {
+          await _auth.signOut();
+        } else {
+          await _googleSignIn.signOut();
+        }
         return GoogleAuthResult(
           accountNotFound: true,
           // message: 'لا يوجد حساب بهذا البريد، الرجاء إنشاء حساب أولاً.',
@@ -149,9 +163,8 @@ class AuthService {
       }
 
       // تسجيل الدخول الفعلي بـ Firebase Auth
-      final UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
+      final UserCredential userCredential =
+          webCredential ?? await _auth.signInWithCredential(credential!);
 
       final User? user = userCredential.user;
 
@@ -433,6 +446,12 @@ class AuthService {
         }
         final messageData = messageDoc.data();
         if (messageData == null) continue;
+        // History is reserved for system messages. Older app versions copied
+        // user-authored messages here, so filter those legacy records out.
+        if (messageData.containsKey('senderId') ||
+            messageData.containsKey('receiverId')) {
+          continue;
+        }
 
         final historyData = historyDoc.data();
         final Timestamp? viewedAt = historyData['viewedAt'] is Timestamp
@@ -492,6 +511,10 @@ class AuthService {
 
         final messageData = messageDoc.data();
         if (messageData == null) continue;
+        if (messageData.containsKey('senderId') ||
+            messageData.containsKey('receiverId')) {
+          continue;
+        }
 
         final favoriteData = favoriteDoc.data();
         final Timestamp? addedAt = favoriteData['addedAt'] is Timestamp
@@ -599,7 +622,12 @@ class AuthService {
     final viewedMessageIds = historySnapshot.docs.map((doc) => doc.id).toSet();
 
     final availableMessages = messagesSnapshot.docs
-        .where((doc) => !viewedMessageIds.contains(doc.id))
+        .where(
+          (doc) =>
+              !viewedMessageIds.contains(doc.id) &&
+              !doc.data().containsKey('senderId') &&
+              !doc.data().containsKey('receiverId'),
+        )
         .toList();
 
     if (availableMessages.isEmpty) return null;
@@ -661,6 +689,10 @@ class AuthService {
 
       final messageData = messageDoc.data();
       if (messageData == null) return null;
+      if (messageData.containsKey('senderId') ||
+          messageData.containsKey('receiverId')) {
+        return null;
+      }
 
       final Timestamp? viewedAt = historyData['viewedAt'] is Timestamp
           ? historyData['viewedAt'] as Timestamp

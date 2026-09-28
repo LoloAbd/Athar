@@ -7,7 +7,8 @@ import '../theme/app_colors.dart';
 import '../widgets/shared_snack_bar.dart';
 
 class RandomMessagePage extends StatefulWidget {
-  const RandomMessagePage({super.key});
+  final bool isArabic;
+  const RandomMessagePage({super.key, required this.isArabic});
 
   @override
   State<RandomMessagePage> createState() => _RandomMessagePageState();
@@ -94,7 +95,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = widget.isArabic;
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -111,15 +112,15 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
           fontWeight: FontWeight.bold,
         ),
 
-        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+        iconTheme: IconThemeData(color: AppColors.darkBlue),
       ),
 
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.primaryColor, Colors.white],
+            colors: [AppColors.primaryColor, AppColors.secondaryColor],
             stops: [0.0, 0.75],
           ),
         ),
@@ -166,7 +167,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
       padding: const EdgeInsets.fromLTRB(22, 26, 22, 24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppColors.darkBlue, Color(0xFF16305A)],
@@ -276,7 +277,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
       duration: const Duration(milliseconds: 180),
       padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.secondaryColor,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: focused ? AppColors.darkBlue : AppColors.gold,
@@ -308,10 +309,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
             cursorColor: AppColors.darkBlue,
             style: GoogleFonts.getFont(
               isArabic ? 'Almarai' : 'Alike',
-              textStyle: const TextStyle(
-                color: AppColors.darkBlue,
-                fontSize: 15,
-              ),
+              textStyle: TextStyle(color: AppColors.darkBlue, fontSize: 15),
             ),
 
             decoration: InputDecoration(
@@ -361,7 +359,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
               color: AppColors.primaryColor,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.lock_clock_rounded,
               color: AppColors.darkBlue,
               size: 22,
@@ -423,12 +421,12 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: AppColors.gold, width: 1.2),
+              side: BorderSide(color: AppColors.gold, width: 1.2),
             ),
           ),
 
           icon: _isSending
-              ? const SizedBox(
+              ? SizedBox(
                   width: 19,
                   height: 19,
                   child: CircularProgressIndicator(
@@ -436,7 +434,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
                     color: AppColors.gold,
                   ),
                 )
-              : const Icon(Icons.send_rounded, color: AppColors.gold),
+              : Icon(Icons.send_rounded, color: AppColors.gold),
           label: SharedText(
             title: _isSending ? t.sending : t.sendToTheFuture,
             fontNum: 16,

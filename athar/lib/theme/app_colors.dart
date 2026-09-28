@@ -3,19 +3,29 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
+  /// Set by the app theme controller before rebuilding MaterialApp.
+  static bool isDark = false;
+
   // ==============================
   // Primary Colors
   // ==============================
 
-  static const Color primaryColor = Color.fromARGB(255, 232, 241, 250);
+  static Color get primaryColor =>
+      isDark ? darkBlueBase : const Color.fromARGB(255, 232, 241, 250);
+  static const Color darkBlueBase = Color.fromARGB(255, 17, 42, 69);
 
-  static const Color primaryColorTrans = Color.fromARGB(191, 232, 241, 250);
+  static Color get primaryColorTrans => isDark
+      ? darkBlueBase.withValues(alpha: 0.75)
+      : const Color.fromARGB(191, 232, 241, 250);
 
-  static const Color darkBlue = Color.fromARGB(255, 17, 42, 69);
+  static Color get darkBlue =>
+      isDark ? const Color.fromARGB(255, 232, 241, 250) : darkBlueBase;
 
   static const Color error = Color.fromARGB(255, 117, 23, 23);
 
   static const Color success = Color(0xFF1B5E20);
+  static Color get unread =>
+      isDark ? backgroundBase : const Color.fromARGB(255, 216, 157, 157);
 
   // ==============================
   // Gold Colors
@@ -33,9 +43,11 @@ class AppColors {
   // Secondary Colors
   // ==============================
 
-  static const Color secondaryColor = Color.fromARGB(255, 241, 246, 250);
+  static Color get secondaryColor =>
+      isDark ? backgroundBase : const Color.fromARGB(255, 241, 246, 250);
 
-  static const Color secondaryText = Color(0xFF6B7B8C);
+  static Color get secondaryText =>
+      isDark ? borderColor : const Color(0xFF6B7B8C);
 
   static const Color borderColor = Color.fromARGB(255, 184, 203, 231);
 
@@ -43,15 +55,18 @@ class AppColors {
   // Background Colors
   // ==============================
 
-  static const Color background = Color.fromARGB(255, 34, 73, 116);
+  static Color get background =>
+      isDark ? const Color.fromARGB(255, 34, 73, 116) : backgroundBase;
+  static const Color backgroundBase = Color.fromARGB(255, 34, 73, 116);
 
-  static const Color iconBackground = Color.fromARGB(255, 201, 221, 242);
+  static Color get iconBackground =>
+      isDark ? darkBlueBase : const Color.fromARGB(255, 201, 221, 242);
 
   // ==============================
   // Navigation Bar Colors
   // ==============================
 
-  static const Color navigationBarBackground = Color.fromARGB(255, 34, 73, 116);
+  static Color get navigationBarBackground => backgroundBase;
 
   static const Color navigationBarSelected = Color.fromARGB(255, 240, 201, 138);
 
@@ -68,10 +83,14 @@ class AppColors {
   // Favorites Screen Colors
   // =============================================
 
-  static const Color emptyFavBackground = Color(0xFFF5F8FB);
-  static const Color favBordar = Color(0xFFC9DCEB);
-  static const Color favBoxShadow = Color(0x1A173B5E);
-  static const Color moreColor = Color(0xFF55708A);
-  static const Color favButtonBackground = Color(0xFFFFF7E5);
-  static const Color selectedCatButton = Color(0x30173B5E);
+  static Color get emptyFavBackground =>
+      isDark ? backgroundBase : const Color(0xFFF5F8FB);
+  static Color get favBordar => isDark ? borderColor : const Color(0xFFC9DCEB);
+  static Color get favBoxShadow =>
+      isDark ? darkBlueBase.withValues(alpha: 0.25) : const Color(0x1A173B5E);
+  static Color get moreColor => isDark ? borderColor : const Color(0xFF55708A);
+  static Color get favButtonBackground =>
+      isDark ? backgroundBase : const Color(0xFFFFF7E5);
+  static Color get selectedCatButton =>
+      isDark ? borderColor.withValues(alpha: 0.2) : const Color(0x30173B5E);
 }

@@ -6,11 +6,19 @@ import 'profile_screen.dart';
 import 'favorites_screen.dart';
 import 'history_screen.dart';
 import '../theme/app_colors.dart';
+import '../app_locale.dart' as app_locale;
 
 class MainScreen extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
+  final bool isArabic;
+  final ValueChanged<bool> onThemeChanged;
 
-  const MainScreen({super.key, required this.onLanguageChanged});
+  const MainScreen({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+    required this.onThemeChanged,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -28,18 +36,16 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool currentIsArabic = app_locale.isArabic;
     final List<Widget> pages = [
-      Homepage(onLanguageChanged: widget.onLanguageChanged),
-      FavoritesScreen(
-        key: favoritesKey,
+      Homepage(
         onLanguageChanged: widget.onLanguageChanged,
+        onThemeChanged: widget.onThemeChanged,
+        isArabic: currentIsArabic,
       ),
-      HistoryScreen(
-        key: historyKey,
-        onLanguageChanged: widget.onLanguageChanged,
-      ),
-      ProfilePage(onLanguageChanged: widget.onLanguageChanged),
+      FavoritesScreen(key: favoritesKey, isArabic: currentIsArabic),
+      HistoryScreen(key: historyKey, isArabic: currentIsArabic),
+      ProfilePage(),
     ];
 
     return Scaffold(
@@ -72,11 +78,11 @@ class _MainScreenState extends State<MainScreen> {
               selectedItemColor: AppColors.navigationBarSelected,
               unselectedItemColor: AppColors.navigationBarUnselected,
               selectedLabelStyle: GoogleFonts.getFont(
-                isArabic ? 'Almarai' : 'Alike',
+                currentIsArabic ? 'Almarai' : 'Alike',
                 fontSize: 12,
               ),
               unselectedLabelStyle: GoogleFonts.getFont(
-                isArabic ? 'Almarai' : 'Alike',
+                currentIsArabic ? 'Almarai' : 'Alike',
                 fontSize: 12,
               ),
               currentIndex: _currentIndex,

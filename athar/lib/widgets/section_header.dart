@@ -14,7 +14,7 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(
+        Icon(
           Icons.auto_awesome,
           size: 20,
           color: AppColors.lightGold,
@@ -36,7 +36,7 @@ class SectionHeader extends StatelessWidget {
           height: 1.5,
           color: AppColors.lightGold,
         ),
-        const Icon(
+        Icon(
           Icons.auto_awesome,
           size: 20,
           color: AppColors.lightGold,

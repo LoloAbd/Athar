@@ -5,11 +5,17 @@ import '../widgets/shared_text.dart';
 import '../l10n/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../services/auth_service.dart';
+import '../app_locale.dart' as app_locale;
 
 class ForgotPassword extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
+  final bool isArabic;
 
-  const ForgotPassword({super.key, required this.onLanguageChanged});
+  const ForgotPassword({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+  });
 
   @override
   State<ForgotPassword> createState() => _ForgotPasswordState();
@@ -168,13 +174,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       alignment: AlignmentDirectional.topStart,
                       child: IconButton(
                         onPressed: () {
-                          final currentLanguage = Localizations.localeOf(
-                            context,
-                          ).languageCode;
-                          if (currentLanguage == 'en') {
-                            widget.onLanguageChanged(const Locale('ar'));
-                          } else {
+                          if (app_locale.isArabic) {
                             widget.onLanguageChanged(const Locale('en'));
+                          } else {
+                            widget.onLanguageChanged(const Locale('ar'));
                           }
                         },
 
@@ -232,7 +235,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         }
                       },
 
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.darkBlue,
                         fontSize: 16,
                       ),
@@ -244,7 +247,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         ),
                         filled: true,
                         fillColor: AppColors.primaryColor,
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.email_outlined,
                           color: AppColors.darkBlue,
                         ),
@@ -311,7 +314,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         shadowColor: AppColors.gold,
                       ),
                       icon: _isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(

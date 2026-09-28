@@ -5,10 +5,16 @@ import '../l10n/app_localizations.dart';
 import '../widgets/shared_text.dart';
 import '../widgets/text_form_field.dart';
 import '../theme/app_colors.dart';
+import '../app_locale.dart' as app_locale;
 
 class SignUpPage extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
-  const SignUpPage({super.key, required this.onLanguageChanged});
+  final bool isArabic;
+  const SignUpPage({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+  });
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -164,14 +170,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       alignment: AlignmentDirectional.topStart,
                       child: IconButton(
                         onPressed: () {
-                          final currentLanguage = Localizations.localeOf(
-                            context,
-                          ).languageCode;
-
-                          if (currentLanguage == 'en') {
-                            widget.onLanguageChanged(const Locale('ar'));
-                          } else {
+                          if (app_locale.isArabic) {
                             widget.onLanguageChanged(const Locale('en'));
+                          } else {
+                            widget.onLanguageChanged(const Locale('ar'));
                           }
                         },
                         icon: ImageIcon(

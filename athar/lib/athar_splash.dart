@@ -5,8 +5,15 @@ import 'services/auth_gate.dart';
 
 class AtharSplashScreen extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
+  final bool isArabic;
+  final ValueChanged<bool> onThemeChanged;
 
-  const AtharSplashScreen({super.key, required this.onLanguageChanged});
+  const AtharSplashScreen({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+    required this.onThemeChanged,
+  });
 
   @override
   State<AtharSplashScreen> createState() => _AtharSplashScreenState();
@@ -60,8 +67,11 @@ class _AtharSplashScreenState extends State<AtharSplashScreen>
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) =>
-            AuthGate(onLanguageChanged: widget.onLanguageChanged),
+        builder: (context) => AuthGate(
+          onLanguageChanged: widget.onLanguageChanged,
+          isArabic: widget.isArabic,
+          onThemeChanged: widget.onThemeChanged,
+        ),
       ),
     );
   }

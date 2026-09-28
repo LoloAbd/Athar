@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_colors.dart';
 
 class SharedText extends StatelessWidget {
   final String title;
@@ -32,6 +33,9 @@ class SharedText extends StatelessWidget {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     final fontFamily = isArabic ? 'Almarai' : 'Alike';
+    final effectiveColor = colorString == Colors.black
+        ? AppColors.darkBlue
+        : colorString;
 
     return Text(
       title,
@@ -40,7 +44,7 @@ class SharedText extends StatelessWidget {
         fontFamily,
 
         textStyle: TextStyle(
-          color: colorString,
+          color: effectiveColor,
           fontSize: fontNum.toDouble(),
           overflow: textOverflow,
           fontWeight: fontWeight,

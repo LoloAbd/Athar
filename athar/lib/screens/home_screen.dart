@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +10,22 @@ import '../widgets/shared_text.dart';
 import '../widgets/section_header.dart';
 import '../widgets/quick_action_card.dart';
 import '../widgets/shared_snack_bar.dart';
+import '../services/random_message_service.dart';
+import 'notifications_screen.dart';
+import 'about_screen.dart';
+import '../app_locale.dart' as app_locale;
 
 class Homepage extends StatefulWidget {
   final Function(Locale) onLanguageChanged;
+  final bool isArabic;
+  final ValueChanged<bool> onThemeChanged;
 
-  const Homepage({super.key, required this.onLanguageChanged});
+  const Homepage({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+    required this.onThemeChanged,
+  });
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -28,7 +41,7 @@ class _HomepageState extends State<Homepage> {
 
   bool isLoadingMessage = true;
   bool isFav = false;
-  bool haveNotification = false;
+  final RandomMessageService _userMessages = RandomMessageService();
 
   @override
   void initState() {
@@ -162,7 +175,11 @@ class _HomepageState extends State<Homepage> {
 
   // Called by RefreshIndicator when the user pulls down to refresh
   Future<void> _handleRefresh() async {
-    await Future.wait([_loadUserData(), _loadRandomMessage()]);
+    await Future.wait([
+      _loadUserData(),
+      _loadRandomMessage(),
+      _loadReminderMessage(),
+    ]);
   }
 
   // Add to favorites
@@ -188,9 +205,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
-    final bool isArabic =
-        Localizations.localeOf(context).languageCode ==
-        'ar'; // TODO: make it a global var
+    final bool isArabic = widget.isArabic;
 
     final DateTime now = DateTime.now();
     final int hour = now.hour;
@@ -205,14 +220,14 @@ class _HomepageState extends State<Homepage> {
           children: [
             SizedBox(height: 30),
             ListTile(
-              leading: const ImageIcon(
+              leading: ImageIcon(
                 AssetImage('assets/images/translation.png'),
                 size: 30,
-                color: Color.fromARGB(255, 15, 20, 51),
+                color: AppColors.darkBlue,
               ),
               title: SharedText(
                 title: t.language,
-                colorString: const Color.fromARGB(255, 15, 20, 51),
+                colorString: AppColors.darkBlue,
                 fontNum: 16,
               ),
               onTap: () {
@@ -222,7 +237,7 @@ class _HomepageState extends State<Homepage> {
                     return SimpleDialog(
                       title: SharedText(
                         title: t.language,
-                        colorString: const Color.fromARGB(255, 15, 20, 51),
+                        colorString: AppColors.darkBlue,
                         fontNum: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -243,18 +258,13 @@ class _HomepageState extends State<Homepage> {
                                         context,
                                       ).languageCode ==
                                       'ar'
-                                  ? const Color(0xFFB8DAF0)
+                                  ? AppColors.iconBackground
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: SharedText(
                               title: t.arabic,
-                              colorString: const Color.fromARGB(
-                                255,
-                                15,
-                                20,
-                                51,
-                              ),
+                              colorString: AppColors.darkBlue,
                               fontNum: 16,
                             ),
                           ),
@@ -275,18 +285,13 @@ class _HomepageState extends State<Homepage> {
                                         context,
                                       ).languageCode ==
                                       'en'
-                                  ? const Color(0xFFB8DAF0)
+                                  ? AppColors.iconBackground
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: SharedText(
                               title: t.english,
-                              colorString: const Color.fromARGB(
-                                255,
-                                15,
-                                20,
-                                51,
-                              ),
+                              colorString: AppColors.darkBlue,
                               fontNum: 16,
                             ),
                           ),
@@ -298,15 +303,34 @@ class _HomepageState extends State<Homepage> {
               },
             ),
 
+            SwitchListTile(
+              secondary: Icon(
+                AppColors.isDark
+                    ? Icons.dark_mode_outlined
+                    : Icons.light_mode_outlined,
+                color: AppColors.darkBlue,
+              ),
+              title: SharedText(
+                title: AppColors.isDark ? t.lightMode : t.darkMode,
+                colorString: AppColors.darkBlue,
+                fontNum: 16,
+              ),
+              value: AppColors.isDark,
+              activeThumbColor: AppColors.gold,
+              onChanged: (value) {
+                widget.onThemeChanged(value);
+              },
+            ),
+
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.settings_outlined,
                 size: 30,
-                color: Color.fromARGB(255, 15, 20, 51),
+                color: AppColors.darkBlue,
               ),
               title: SharedText(
                 title: t.settings,
-                colorString: const Color.fromARGB(255, 15, 20, 51),
+                colorString: AppColors.darkBlue,
                 fontNum: 16,
               ),
               onTap: () {
@@ -315,28 +339,32 @@ class _HomepageState extends State<Homepage> {
             ),
 
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.info_outline,
                 size: 30,
-                color: Color.fromARGB(255, 15, 20, 51),
+                color: AppColors.darkBlue,
               ),
               title: SharedText(
                 title: t.about,
-                colorString: const Color.fromARGB(255, 15, 20, 51),
+                colorString: AppColors.darkBlue,
                 fontNum: 16,
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AboutScreen(isArabic: isArabic),
+                  ),
+                );
+              },
             ),
 
             ListTile(
-              leading: const Icon(
-                Icons.logout,
-                size: 30,
-                color: Color.fromARGB(255, 15, 20, 51),
-              ),
+              leading: Icon(Icons.logout, size: 30, color: AppColors.darkBlue),
               title: SharedText(
                 title: t.logout,
-                colorString: const Color.fromARGB(255, 15, 20, 51),
+                colorString: AppColors.darkBlue,
                 fontNum: 16,
               ),
               onTap: () async {
@@ -414,38 +442,81 @@ class _HomepageState extends State<Homepage> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                IconButton(
-                  onPressed: () {},
-                  // TODO: handle notifications
-                  /*style: IconButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 5,
-                    shape: const CircleBorder(),
-                    padding: EdgeInsets.zero,
-                    minimumSize: const Size(40, 40),
-                    fixedSize: const Size(40, 40),
-                  ),
-                  */
-                  icon: const Icon(
-                    Icons.notifications_outlined,
-                    size: 35,
-                    color: Colors.black,
-                  ),
-                ),
-
-                if (haveNotification)
-                  Positioned(
-                    top: 11,
-                    right: 11,
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: const BoxDecoration(
-                        color: AppColors.gold,
-                        shape: BoxShape.circle,
+                StreamBuilder(
+                  stream: _userMessages.getUnreadNotifications(),
+                  builder: (context, snapshot) {
+                    return StreamBuilder<int>(
+                      stream: Stream<int>.periodic(
+                        const Duration(seconds: 1),
+                        (tick) => tick,
                       ),
-                    ),
-                  ),
+                      builder: (context, _) {
+                        final now = DateTime.now();
+                        final unreadCount =
+                            snapshot.data?.docs.where((doc) {
+                              final data = doc.data();
+                              if (data['isRead'] == true) return false;
+                              final rawTime = data['scheduledAt'];
+                              if (data['type'] == 'scheduled_user_message' &&
+                                  rawTime is! Timestamp) {
+                                return false;
+                              }
+                              return rawTime is! Timestamp ||
+                                  !now.isBefore(rawTime.toDate());
+                            }).length ??
+                            0;
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            IconButton(
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => NotificationsScreen(
+                                    isArabic: app_locale.isArabic,
+                                  ),
+                                ),
+                              ),
+                              icon: Icon(
+                                Icons.inbox_outlined,
+                                size: 40,
+                                color: AppColors.darkBlue,
+                              ),
+                            ),
+                            if (unreadCount > 0)
+                              Positioned(
+                                top: 3,
+                                right: 2,
+                                child: Container(
+                                  constraints: const BoxConstraints(
+                                    minWidth: 21,
+                                    minHeight: 21,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 5,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.gold,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: SharedText(
+                                    title: unreadCount > 99
+                                        ? '99+'
+                                        : '$unreadCount',
+                                    colorString: AppColors.darkBlue,
+                                    fontNum: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -475,14 +546,14 @@ class _HomepageState extends State<Homepage> {
                                 : hour >= 18
                                 ? t.goodAfternoon
                                 : t.goodEvening,
-                            colorString: Colors.black,
+                            colorString: AppColors.darkBlue,
                             fontNum: 22,
                             fontWeight: FontWeight.w500,
                           ),
                           const SizedBox(width: 2),
                           SharedText(
                             title: userName,
-                            colorString: Colors.black,
+                            colorString: AppColors.darkBlue,
                             fontNum: 22,
                             fontWeight: FontWeight.bold,
                           ),
@@ -491,7 +562,7 @@ class _HomepageState extends State<Homepage> {
 
                       SharedText(
                         title: t.welcomeMessage,
-                        colorString: Colors.black,
+                        colorString: AppColors.darkBlue,
                         fontNum: 14,
                       ),
                     ],
@@ -556,7 +627,7 @@ class _HomepageState extends State<Homepage> {
                               children: [
                                 SharedText(
                                   title: t.todayMessage,
-                                  colorString: Colors.black,
+                                  colorString: AppColors.darkBlue,
                                   fontNum: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -572,7 +643,7 @@ class _HomepageState extends State<Homepage> {
                                       height: 1.5,
                                       color: AppColors.lightGold,
                                     ),
-                                    const Icon(
+                                    Icon(
                                       Icons.auto_awesome,
                                       size: 20,
                                       color: AppColors.lightGold,
@@ -587,7 +658,7 @@ class _HomepageState extends State<Homepage> {
                         const SizedBox(height: 25),
 
                         if (isLoadingMessage)
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(vertical: 20),
                             child: CircularProgressIndicator(
                               color: AppColors.lightGold,
@@ -596,7 +667,7 @@ class _HomepageState extends State<Homepage> {
                         else if (todayMessage == null)
                           SharedText(
                             title: t.welcomeMessage,
-                            colorString: Colors.black,
+                            colorString: AppColors.darkBlue,
                             fontNum: 18,
                             textAlign: TextAlign.center,
                             shadow: const [
@@ -609,7 +680,7 @@ class _HomepageState extends State<Homepage> {
                             title: isArabic
                                 ? (todayMessage!['textAr'] ?? '').toString()
                                 : (todayMessage!['textEn'] ?? '').toString(),
-                            colorString: Colors.black,
+                            colorString: AppColors.darkBlue,
                             fontNum: 18,
                             textAlign: TextAlign.center,
                             shadow: const [
@@ -625,7 +696,7 @@ class _HomepageState extends State<Homepage> {
                           margin: const EdgeInsetsDirectional.only(bottom: 15),
                           width: 70,
                           height: 40,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.favButtonBackground,
                             shape: BoxShape.circle,
                           ),
@@ -783,7 +854,7 @@ class _HomepageState extends State<Homepage> {
                             ),
                             const SizedBox(width: 10),
                             if (isLoadingMessage)
-                              const Padding(
+                              Padding(
                                 padding: EdgeInsets.symmetric(vertical: 20),
                                 child: CircularProgressIndicator(
                                   color: AppColors.lightGold,
@@ -793,7 +864,7 @@ class _HomepageState extends State<Homepage> {
                               Expanded(
                                 child: SharedText(
                                   title: t.reminderMessage,
-                                  colorString: Colors.black,
+                                  colorString: AppColors.darkBlue,
                                   fontNum: 13,
                                   textAlign: TextAlign.start,
                                   shadow: const [
@@ -810,7 +881,7 @@ class _HomepageState extends State<Homepage> {
                                             .toString()
                                       : (reminderMessage!['english'] ?? '')
                                             .toString(),
-                                  colorString: Colors.black,
+                                  colorString: AppColors.darkBlue,
                                   fontNum: 13,
                                   textAlign: TextAlign.start,
                                   shadow: const [

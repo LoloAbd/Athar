@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_colors.dart';
 
 class SharedTextFormField extends StatefulWidget {
   final String labelText;
@@ -27,8 +28,6 @@ class _SharedTextFormFieldState extends State<SharedTextFormField> {
   bool isPasswordVisible = false;
 
   // Colors
-  static const Color primaryColor = Color(0xFFE8F1FA);
-  static const Color darkBlue = Color(0xFF112A45);
   static const Color gold = Color(0xFFE3B866);
 
   @override
@@ -48,7 +47,7 @@ class _SharedTextFormFieldState extends State<SharedTextFormField> {
 
         labelStyle: GoogleFonts.getFont(
           fontFamily,
-          textStyle: const TextStyle(color: Colors.black, fontSize: 15),
+          textStyle: TextStyle(color: AppColors.darkBlue, fontSize: 15),
         ),
 
         hintText: widget.hintText,
@@ -59,9 +58,9 @@ class _SharedTextFormFieldState extends State<SharedTextFormField> {
         ),
 
         filled: true,
-        fillColor: primaryColor,
+        fillColor: AppColors.secondaryColor,
 
-        prefixIcon: Icon(widget.iconReq, color: darkBlue),
+        prefixIcon: Icon(widget.iconReq, color: AppColors.darkBlue),
 
         suffixIcon: Row(
           mainAxisSize: MainAxisSize.min,
@@ -70,7 +69,7 @@ class _SharedTextFormFieldState extends State<SharedTextFormField> {
               IconButton(
                 icon: Icon(
                   isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: darkBlue,
+                  color: AppColors.darkBlue,
                 ),
                 onPressed: () {
                   setState(() {
@@ -80,7 +79,7 @@ class _SharedTextFormFieldState extends State<SharedTextFormField> {
               ),
 
             IconButton(
-              icon: const Icon(Icons.clear, color: darkBlue),
+              icon: Icon(Icons.clear, color: AppColors.darkBlue),
               onPressed: () {
                 widget.controller.clear();
               },

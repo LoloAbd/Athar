@@ -7,7 +7,8 @@ import '../widgets/shared_text.dart';
 import '../widgets/shared_snack_bar.dart';
 
 class RandomPersonPage extends StatefulWidget {
-  const RandomPersonPage({super.key});
+  final bool isArabic;
+  const RandomPersonPage({super.key, required this.isArabic});
 
   @override
   State<RandomPersonPage> createState() => _RandomPersonPageState();
@@ -162,7 +163,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = widget.isArabic;
 
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
@@ -185,11 +186,11 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
           fontNum: 20,
           fontWeight: FontWeight.bold,
         ),
-        iconTheme: const IconThemeData(color: AppColors.darkBlue),
+        iconTheme: IconThemeData(color: AppColors.darkBlue),
       ),
 
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -236,7 +237,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [AppColors.darkBlue, Color(0xFF16305A)],
@@ -304,7 +305,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.secondaryColor,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: focused ? AppColors.darkBlue : AppColors.gold,
@@ -336,10 +337,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                 cursorColor: AppColors.darkBlue,
                 style: GoogleFonts.getFont(
                   isArabic ? 'Almarai' : 'Alike',
-                  textStyle: const TextStyle(
-                    color: AppColors.darkBlue,
-                    fontSize: 15,
-                  ),
+                  textStyle: TextStyle(color: AppColors.darkBlue, fontSize: 15),
                 ),
 
                 decoration: InputDecoration(
@@ -406,14 +404,14 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
             style: OutlinedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: AppColors.darkBlue,
-              side: const BorderSide(color: AppColors.gold, width: 1.3),
+              side: BorderSide(color: AppColors.gold, width: 1.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
 
             icon: _isFindingUser
-                ? const SizedBox(
+                ? SizedBox(
                     width: 19,
                     height: 19,
                     child: CircularProgressIndicator(
@@ -421,7 +419,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                       color: AppColors.darkBlue,
                     ),
                   )
-                : const Icon(Icons.casino_rounded, color: AppColors.darkBlue),
+                : Icon(Icons.casino_rounded, color: AppColors.darkBlue),
 
             label: SharedText(
               title: _isFindingUser
@@ -449,14 +447,14 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.secondaryColor,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: AppColors.gold),
       ),
 
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.person_search_rounded,
             size: 38,
             color: AppColors.darkBlue,
@@ -514,7 +512,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
           Container(
             width: 54,
             height: 54,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.darkBlue,
             ),
@@ -624,12 +622,12 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: AppColors.gold, width: 1.2),
+              side: BorderSide(color: AppColors.gold, width: 1.2),
             ),
           ),
 
           icon: _isSending
-              ? const SizedBox(
+              ? SizedBox(
                   width: 19,
                   height: 19,
                   child: CircularProgressIndicator(
@@ -637,7 +635,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                     color: AppColors.gold,
                   ),
                 )
-              : const Icon(Icons.send_rounded, color: AppColors.gold),
+              : Icon(Icons.send_rounded, color: AppColors.gold),
 
           label: SharedText(
             title: _isSending ? t.sending : t.sendMessage,

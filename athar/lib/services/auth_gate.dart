@@ -5,8 +5,15 @@ import '../screens/main_screen.dart';
 
 class AuthGate extends StatelessWidget {
   final Function(Locale) onLanguageChanged;
+  final bool isArabic;
+  final ValueChanged<bool> onThemeChanged;
 
-  const AuthGate({super.key, required this.onLanguageChanged});
+  const AuthGate({
+    super.key,
+    required this.onLanguageChanged,
+    required this.isArabic,
+    required this.onThemeChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +28,17 @@ class AuthGate extends StatelessWidget {
         }
 
         if (snapshot.hasData) {
-          return MainScreen(onLanguageChanged: onLanguageChanged);
+          return MainScreen(
+            onLanguageChanged: onLanguageChanged,
+            isArabic: isArabic,
+            onThemeChanged: onThemeChanged,
+          );
         }
 
-        return LoginPage(onLanguageChanged: onLanguageChanged);
+        return LoginPage(
+          onLanguageChanged: onLanguageChanged,
+          isArabic: isArabic,
+        );
       },
     );
   }

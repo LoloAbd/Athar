@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,9 +8,9 @@ import '../theme/app_colors.dart';
 import '../widgets/shared_text.dart';
 
 class HistoryScreen extends StatefulWidget {
-  final Function(Locale) onLanguageChanged;
+  final bool isArabic;
 
-  const HistoryScreen({super.key, required this.onLanguageChanged});
+  const HistoryScreen({super.key, required this.isArabic});
 
   @override
   State<HistoryScreen> createState() => HistoryScreenState();
@@ -107,7 +109,7 @@ class HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final bool isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final bool isArabic = widget.isArabic;
 
     final List<Map<String, dynamic>> filteredHistory = getFilteredHistory(
       isArabic,
@@ -130,114 +132,130 @@ class HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
 
-      body: SafeArea(
-        child: Directionality(
-          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 15, 18, 10),
-                child: Container(
-                  height: 52,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppColors.emptyFavBackground,
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: AppColors.secondaryColor),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildCategoryButton(title: t.all, index: 0),
-                      ),
-                      Expanded(
-                        child: _buildCategoryButton(title: t.ayat, index: 3),
-                      ),
-                      Expanded(
-                        child: _buildCategoryButton(
-                          title: t.messages,
-                          index: 1,
+      body: RefreshIndicator(
+        color: AppColors.gold,
+        onRefresh: loadHistory,
+        child: SafeArea(
+          child: Directionality(
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 15, 18, 10),
+                  child: Container(
+                    height: 52,
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppColors.emptyFavBackground,
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(color: AppColors.secondaryColor),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildCategoryButton(title: t.all, index: 0),
                         ),
-                      ),
-                      Expanded(
-                        child: _buildCategoryButton(title: t.quotes, index: 2),
-                      ),
-                    ],
+                        Expanded(
+                          child: _buildCategoryButton(title: t.ayat, index: 3),
+                        ),
+                        Expanded(
+                          child: _buildCategoryButton(
+                            title: t.messages,
+                            index: 1,
+                          ),
+                        ),
+                        Expanded(
+                          child: _buildCategoryButton(
+                            title: t.quotes,
+                            index: 2,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 8,
-                ),
-
-                child: Container(
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryColor,
-                    borderRadius: BorderRadius.circular(28),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 8,
                   ),
 
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: (value) {
-                      setState(() {
-                        searchText = value;
-                      });
-                    },
-
-                    textDirection: isArabic
-                        ? TextDirection.rtl
-                        : TextDirection.ltr,
-
-                    style: GoogleFonts.getFont(
-                      isArabic ? 'Almarai' : 'Alike',
-                      color: AppColors.darkBlue,
-                      fontSize: 14,
+                  child: Container(
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryColor,
+                      borderRadius: BorderRadius.circular(28),
                     ),
 
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(
-                        Icons.search_rounded,
-                        color: AppColors.secondaryText,
-                        size: 27,
-                      ),
+                    child: TextField(
+                      controller: searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                      },
 
-                      hintText: t.search,
-                      hintStyle: GoogleFonts.getFont(
+                      textDirection: isArabic
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
+
+                      style: GoogleFonts.getFont(
                         isArabic ? 'Almarai' : 'Alike',
-                        color: AppColors.secondaryText,
+                        color: AppColors.darkBlue,
                         fontSize: 14,
                       ),
 
-                      contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: AppColors.secondaryText,
+                          size: 27,
+                        ),
+
+                        hintText: t.search,
+                        hintStyle: GoogleFonts.getFont(
+                          isArabic ? 'Almarai' : 'Alike',
+                          color: AppColors.secondaryText,
+                          fontSize: 14,
+                        ),
+
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              Expanded(
-                child: isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: AppColors.gold),
-                      )
-                    : hasFilteredHistory
-                    ? ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(18, 8, 18, 25),
-                        itemCount: filteredHistory.length,
-                        itemBuilder: (context, index) {
-                          final message = filteredHistory[index];
+                Expanded(
+                  child: isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.gold,
+                          ),
+                        )
+                      : hasFilteredHistory
+                      ? ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(18, 8, 18, 25),
+                          itemCount: filteredHistory.length,
+                          itemBuilder: (context, index) {
+                            final message = filteredHistory[index];
 
-                          return _buildHistoryCard(message, isArabic, t);
-                        },
-                      )
-                    : _buildEmptyHistory(t),
-              ),
-            ],
+                            return _buildHistoryCard(message, isArabic, t);
+                          },
+                        )
+                      : ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            SizedBox(height: 360, child: _buildEmptyHistory(t)),
+                          ],
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -265,10 +283,10 @@ class HistoryScreenState extends State<HistoryScreen> {
         margin: const EdgeInsets.only(bottom: 13),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 17),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.secondaryColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.favBordar),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
               color: AppColors.favBoxShadow,
               blurRadius: 12,
@@ -328,7 +346,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                       Flexible(
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.calendar_today_outlined,
                               size: 12,
                               color: AppColors.moreColor,
@@ -348,7 +366,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                             if (time.isNotEmpty) ...[
                               const SizedBox(width: 4),
 
-                              const Text(
+                              Text(
                                 '•',
                                 style: TextStyle(
                                   color: AppColors.moreColor,
@@ -512,7 +530,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                 shape: BoxShape.circle,
               ),
 
-              child: const Icon(
+              child: Icon(
                 Icons.history_rounded,
                 color: AppColors.gold,
                 size: 48,
@@ -592,7 +610,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.close_rounded,
                           color: AppColors.moreColor,
                         ),
@@ -618,7 +636,7 @@ class HistoryScreenState extends State<HistoryScreen> {
 
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_today_outlined,
                         size: 13,
                         color: AppColors.moreColor,
@@ -631,7 +649,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                       ),
                       if (time.isNotEmpty) ...[
                         const SizedBox(width: 6),
-                        const Text(
+                        Text(
                           '•',
                           style: TextStyle(
                             color: AppColors.moreColor,
@@ -655,7 +673,4 @@ class HistoryScreenState extends State<HistoryScreen> {
       },
     );
   }
-
-
-
 }
