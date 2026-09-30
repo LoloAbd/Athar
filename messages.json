@@ -1,0 +1,272 @@
+[
+  {
+    "id": "msg_0001",
+    "textEn": "Sometimes we wish for a palace, while a small house is enough. Sometimes we wish for a certain person, while our family and friends are enough. Thank God in every situation.",
+    "textAr": "أحيانًا نتمنى قصرًا، بينما يكفينا بيت صغير. وأحيانًا نتمنى شخصًا معينًا، بينما أهلنا وأصدقاؤنا يكفوننا. الحمد لله في كل حال.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0002",
+    "textEn": "Disagreements are sometimes necessary to discover what others hide in their hearts.",
+    "textAr": "أحيانًا تكون الخلافات ضرورية لنعرف ما يخفيه الآخرون في قلوبهم.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0003",
+    "textEn": "Do not improve your image for anyone. Be yourself, and let the right people appreciate you as you are.",
+    "textAr": "لا تحسّن صورتك من أجل أحد. كن كما أنت، ودع الأشخاص المناسبين يقدّرونك كما أنت.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0004",
+    "textEn": "Little do you give thanks. Be grateful for what you have, because many blessings are often overlooked.",
+    "textAr": "قليلًا ما تشكرون. كن ممتنًا لما لديك، فكثير من النعم نغفل عنها.",
+    "type": "ayat",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0005",
+    "textEn": "And whoever is mindful of Allah, He will make a way out for them and provide for them from where they do not expect.",
+    "textAr": "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا ۝ وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ.",
+    "type": "ayat",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0006",
+    "textEn": "God will not forget your step towards consoling someone, your kindness to someone, or your attempt to make someone happy.",
+    "textAr": "لن ينسى الله خطوتك التي مشيتها لجبر خاطر أحد، ولا طيبتك مع أحد، ولا محاولتك لإسعاد شخص.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0007",
+    "textEn": "O Allah, ward off from our homes sadness, worry, and harm, and fill them with peace, mercy, and blessings.",
+    "textAr": "اللهم اصرف عن بيوتنا الحزن والهم والضرر، واملأها سكينة ورحمة وبركة.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0008",
+    "textEn": "Honesty and frankness may sometimes hurt, but they are better than beautiful words that hide the truth.",
+    "textAr": "الصراحة والصدق قد يؤلمان أحيانًا، لكنهما أفضل من كلمات جميلة تخفي الحقيقة.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_0009",
+    "textEn": "What is meant for you will reach you, even if it takes time. Trust Allah’s plan.",
+    "textAr": "ما كُتب لك سيأتيك ولو طال الوقت، فثق بتدبير الله.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00010",
+    "textEn": "Do not justify your actions to those who have already decided to misunderstand you.",
+    "textAr": "لا تبرر أفعالك لمن قرر مسبقًا أن يسيء فهمك.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00011",
+    "textEn": "Whoever conceals his worries and remains patient, Allah knows what is hidden in his heart.",
+    "textAr": "من كتم همومه وصبر، فإن الله يعلم ما يخفيه قلبه.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00012",
+    "textEn": "Be great in your own eyes. You do not need everyone’s approval to know your worth.",
+    "textAr": "كن عظيمًا في عين نفسك، فأنت لا تحتاج إلى موافقة الجميع لتعرف قيمتك.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00013",
+    "textEn": "Family, friends, food, and a roof over your head are blessings worth being grateful for.",
+    "textAr": "العائلة والأصدقاء والطعام وسقف فوق رأسك، كلها نعم تستحق أن تحمد الله عليها.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00014",
+    "textEn": "Train yourself to work without waiting for encouragement, praise, or recognition from others.",
+    "textAr": "درّب نفسك على العمل دون انتظار التشجيع أو المدح أو التقدير من الآخرين.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00015",
+    "textEn": "Do good and let it fall where it may. Goodness never goes to waste.",
+    "textAr": "افعل الخير ودعه يقع حيث يقع، فالخير لا يضيع أبدًا.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00016",
+    "textEn": "The world is temporary, and its pleasures are short-lived. Do not let it distract you from what truly matters.",
+    "textAr": "إن الدنيا فانية ومتاعها قصير، فلا تجعلها تشغلك عما هو أهم وأبقى.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00017",
+    "textEn": "Some people are granted acceptance even when they remain silent. Their presence alone brings comfort.",
+    "textAr": "بعض الناس يمنحهم الله القبول حتى في صمتهم، فوجودهم وحده يبعث الراحة.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00018",
+    "textEn": "The one who does a good deed does not fall. Goodness always leaves a lasting mark.",
+    "textAr": "من يفعل الخير لا يسقط، فالخير يترك أثرًا دائمًا.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00019",
+    "textEn": "Maryam, daughter of Imran, was chosen and honored by Allah. Her story reminds us that patience, faith, and trust in Allah can carry us through the most difficult moments.",
+    "textAr": "مريم ابنة عمران اصطفاها الله وكرّمها، وقصتها تذكرنا بأن الصبر والإيمان والتوكل على الله يمكن أن يحملنا خلال أصعب اللحظات.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00020",
+    "textEn": "Congrats on your failures, most people don't even try.",
+    "textAr": "مبروك على فشلك، فمعظم الناس لا يحاولون حتى.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00021",
+    "textEn": "Your mind is like a magnet: if you think of blessings, you attract them, and if you focus on problems, you draw them in. Therefore, train yourself to think positively and cultivate good thoughts in your mind; the mind is the initial seed of inner peace, and what you nourish today, you will reap tomorrow.",
+    "textAr": "عقلك يشبه المغناطيس، إن فكرت بالنعم جذبتها، وإن ركزت على المشكلات استدعيتها. لذلك درّب نفسك على التفكير الإيجابي وازرع في ذهنك الأفكار الطيبة، فالعقل هو البذرة الأولى للسلام الداخلي، وما تغذيه اليوم ستجنيه غدًا.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00022",
+    "textEn": "Please don't forget that once, you kept moving forward alone, without answers, certainty, or a clear vision — and yet you achieved what you wanted. Keep going.",
+    "textAr": "أرجو ألا تنسى أنك - في وقت مضى- واصلت المسير بمفردك ولم يكن لديك إجابات أو يقين أو رؤية واضحة، ومع ذلك تحقق مُرادك. استمر.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00023",
+    "textEn": "Be like the rain — wherever it falls, it brings good.",
+    "textAr": "كُن كالغيث، أينما وقع نفع.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00024",
+    "textEn": "No, the journey isn't alone. God is with you, watching over you, and His mercy always surrounds you in every circumstance.",
+    "textAr": "لا، الرحلة ليست فردية. الله معك ويرعاك، ودائمًا تحاوطك رحمته بكل الاحتمالات.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00025",
+    "textEn": "You will find the right job, the right people, and abundant opportunities. Your life will become more beautiful, and your path will gradually become clear. Your story isn't over yet; there is wisdom in every delay, and every good thing arrives at the right time.",
+    "textAr": "راح تلاقي الوظيفة المناسبة والأشخاص المناسبين، والفرص الكثيرة، وحياتك رح تصير أحلى، ومسارك رح يوضح شوي شوي. قصتك ما خلصت، كل تأخيرة فيها حكمة، وكل خير جاي بوقته.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00026",
+    "textEn": "If you are content, you will be pleased — and Allah's decree still comes to pass. And if you are discontent, you will be afflicted — and Allah's decree still comes to pass.",
+    "textAr": "إن رضيتم رُضيتم وأمر الله نافذ، وإن سخطتم بليتم وأمر الله نافذ.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00027",
+    "textEn": "Do you complain of life to some powerless servant, and forget the Almighty, All-Powerful God? You shed tears for other than God — by my Lord, that is truly a grave sin. For all creation, even if they were fair to you, are but smoke I see, destined to vanish. Turning to people in need brings only humiliation, while your hardship, with God, is made easy. So call on none but your Lord, for He is the best Helper, the best Protector.",
+    "textAr": "أتشكو الحياة لعبدٍ فقيرٍ\nوتنسى الإله العليّ القدير\nوتسكب دمعاً لغير الإله\nفهذا وربّي لجرمٌ كبير\nفكلّ الخلائق إن أنصفتك\nدخانٌ أراه وحتماً يطير\nوقصد العباد يعود بذلٍّ\nوعسرك عند الإله يسير\nفلا غير ربك يوماً تنادي\nلنعم النصير ونعم المجير",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00028",
+    "textEn": "With one kind word, a person may feel that life is entirely rosy. With one pleasant meeting, they may forget the worries clinging to them. With a single word of encouragement, they may carry on despite being overwhelmed by despair. So don't withhold a good word — it may leave a mark on the heart that time cannot erase. Your kindness, in a single moment, might be the reason a fading hope is revived. Kindness costs nothing, yet it does everything for the soul. People are simpler than we think.",
+    "textAr": "الإنسان بكلمة لطيفة قد يظن أنَّ الحياَةَ كُلَّهَا وردية، وبلقاء مُمتِع قد ينسى مَا عَلِق به من هموم، وبكلمة تشجيع واحدة يتَحامَل على نفسه مهما غلبه اليأس. فلا تبخل بالكلمَة الطَيِبَة، فقد تترك في القلِب أَثراً لا يمحوه الزَّمَن، وقد يكون لُطفك في لحظة سبباً في إحياء أمَلٍ كادَ أن ينطفئ. فالجميل لا يكلف شيئاً، ولكنه يصنع في النُّفوس كُلَّ شيء. الإنسان أبسط مما نظن.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00029",
+    "textEn": "Whoever waits for ideal conditions or encouragement from those around them before starting is doomed to fail from the start. Real work begins in the darkest and most discouraging circumstances.",
+    "textAr": "من ينتظر الظروف المثالية أو تشجيع المحيطين به كي يبدأ، فهو محكوم عليه بالفشل المسبق. العمل الحقيقي يبدأ في أكثر الظروف ظلامًا وإحباطًا.",
+    "type": "quote",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  },
+  {
+    "id": "msg_00030",
+    "textEn": "If your mind keeps asking, \"What if the worst happens?\" remember: \"And whoever relies upon Allah — then He is sufficient for him.\" Tawakkul (trust in Allah) doesn't mean abandoning the means — it means doing your part and leaving the outcome to Allah.",
+    "textAr": "لو عقلك طول الوقت بيسألك: ماذا لو حدث الأسوأ؟ تذكر: «وَمَن يَتَوَكَّلُ عَلَى اللَّهِ فَهُوَ حَسْبُهُ». التوكل مش إنك تسيب الأسباب، لكن تعمل اللي عليك وتسلّم النتيجة لله.",
+    "type": "messages",
+    "createdBy": "system",
+    "isPublic": true,
+    "isApproved": true
+  }
+]
