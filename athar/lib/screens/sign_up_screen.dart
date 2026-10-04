@@ -276,7 +276,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       icon: Icon(Icons.draw, size: 17, color: Colors.black),
                       label: SharedText(
                         title: t.signUp,
-                        colorString: Colors.black,
+                        colorString: AppColors.darkBlueBase,
                         fontNum: 18,
                         fontWeight: FontWeight.bold,
                       ),

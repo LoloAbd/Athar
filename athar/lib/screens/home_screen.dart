@@ -33,6 +33,12 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final AuthService _authService = AuthService();
+  late bool _isDark = AppColors.isDark;
+
+  void _setTheme(bool value) {
+    setState(() => _isDark = value);
+    widget.onThemeChanged(value);
+  }
 
   String userName = '';
   Map<String, dynamic>? messages;
@@ -305,20 +311,20 @@ class _HomepageState extends State<Homepage> {
 
             SwitchListTile(
               secondary: Icon(
-                AppColors.isDark
+                _isDark
                     ? Icons.dark_mode_outlined
                     : Icons.light_mode_outlined,
                 color: AppColors.darkBlue,
               ),
               title: SharedText(
-                title: AppColors.isDark ? t.lightMode : t.darkMode,
+                title: _isDark ? t.lightMode : t.darkMode,
                 colorString: AppColors.darkBlue,
                 fontNum: 16,
               ),
-              value: AppColors.isDark,
+              value: _isDark,
               activeThumbColor: AppColors.gold,
               onChanged: (value) {
-                widget.onThemeChanged(value);
+                _setTheme(value);
               },
             ),
 
@@ -505,7 +511,7 @@ class _HomepageState extends State<Homepage> {
                                     title: unreadCount > 99
                                         ? '99+'
                                         : '$unreadCount',
-                                    colorString: AppColors.darkBlue,
+                                    colorString: AppColors.darkBlueBase,
                                     fontNum: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -627,7 +633,7 @@ class _HomepageState extends State<Homepage> {
                               children: [
                                 SharedText(
                                   title: t.todayMessage,
-                                  colorString: AppColors.darkBlue,
+                                  colorString: AppColors.darkBlueBase,
                                   fontNum: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -667,7 +673,7 @@ class _HomepageState extends State<Homepage> {
                         else if (todayMessage == null)
                           SharedText(
                             title: t.welcomeMessage,
-                            colorString: AppColors.darkBlue,
+                            colorString: AppColors.darkBlueBase,
                             fontNum: 18,
                             textAlign: TextAlign.center,
                             shadow: const [
@@ -680,7 +686,7 @@ class _HomepageState extends State<Homepage> {
                             title: isArabic
                                 ? (todayMessage!['textAr'] ?? '').toString()
                                 : (todayMessage!['textEn'] ?? '').toString(),
-                            colorString: AppColors.darkBlue,
+                            colorString: AppColors.darkBlueBase,
                             fontNum: 18,
                             textAlign: TextAlign.center,
                             shadow: const [
@@ -864,7 +870,7 @@ class _HomepageState extends State<Homepage> {
                               Expanded(
                                 child: SharedText(
                                   title: t.reminderMessage,
-                                  colorString: AppColors.darkBlue,
+                                  colorString: AppColors.darkBlueBase,
                                   fontNum: 13,
                                   textAlign: TextAlign.start,
                                   shadow: const [
@@ -881,7 +887,7 @@ class _HomepageState extends State<Homepage> {
                                             .toString()
                                       : (reminderMessage!['english'] ?? '')
                                             .toString(),
-                                  colorString: AppColors.darkBlue,
+                                  colorString: AppColors.darkBlueBase,
                                   fontNum: 13,
                                   textAlign: TextAlign.start,
                                   shadow: const [

@@ -96,7 +96,7 @@ class AboutScreen extends StatelessWidget {
                     title: isArabic
                         ? 'كلمات طيبة، وأثر يبقى.'
                         : 'Kind words. A lasting impact.',
-                    colorString: const Color(0xFFE7EEF6),
+                    colorString: Colors.white,
                     fontNum: 15,
                     textAlign: TextAlign.center,
                   ),

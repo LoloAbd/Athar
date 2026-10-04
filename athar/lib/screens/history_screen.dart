@@ -117,10 +117,10 @@ class HistoryScreenState extends State<HistoryScreen> {
     final bool hasFilteredHistory = filteredHistory.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.primaryColor,
 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primaryColor,
         elevation: 0,
         centerTitle: true,
         title: SharedText(
@@ -500,7 +500,7 @@ class HistoryScreenState extends State<HistoryScreen> {
         child: SharedText(
           title: title,
 
-          colorString: isSelected ? Colors.white : AppColors.darkBlue,
+          colorString: isSelected ? AppColors.darkBlueBase : AppColors.darkBlue,
 
           fontNum: 11,
 
@@ -532,7 +532,7 @@ class HistoryScreenState extends State<HistoryScreen> {
 
               child: Icon(
                 Icons.history_rounded,
-                color: AppColors.gold,
+                color: AppColors.darkBlueBase,
                 size: 48,
               ),
             ),
@@ -575,7 +575,7 @@ class HistoryScreenState extends State<HistoryScreen> {
         return Directionality(
           textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
           child: Dialog(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.secondaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),

@@ -329,7 +329,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             ),
                       label: SharedText(
                         title: _isLoading ? t.sending : t.sendResetLink,
-                        colorString: Colors.black,
+                        colorString: AppColors.darkBlueBase,
                         fontNum: 18,
                         fontWeight: FontWeight.bold,
                       ),

@@ -27,6 +27,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
+  void _handleThemeChanged(bool value) {
+    setState(() {});
+    widget.onThemeChanged(value);
+  }
+
   final GlobalKey<FavoritesScreenState> favoritesKey =
       GlobalKey<FavoritesScreenState>();
 
@@ -40,7 +45,7 @@ class _MainScreenState extends State<MainScreen> {
     final List<Widget> pages = [
       Homepage(
         onLanguageChanged: widget.onLanguageChanged,
-        onThemeChanged: widget.onThemeChanged,
+        onThemeChanged: _handleThemeChanged,
         isArabic: currentIsArabic,
       ),
       FavoritesScreen(key: favoritesKey, isArabic: currentIsArabic),

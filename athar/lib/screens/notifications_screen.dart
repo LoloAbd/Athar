@@ -136,7 +136,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 data['senderId'] == data['receiverId']
                                     ? Icons.schedule_rounded
                                     : Icons.mail_outline_rounded,
-                                color: AppColors.background,
+                                color: AppColors.darkBlue,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -153,8 +153,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 title: read ? t.read : t.newMessage,
                                 fontNum: 12,
                                 colorString: read
-                                    ? Colors.grey
-                                    : AppColors.background,
+                                    ? AppColors.secondaryText
+                                    : AppColors.darkBlue,
                               ),
                             ],
                           ),
@@ -205,7 +205,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               title: data['status'] == 'accepted'
                                   ? t.accepted
                                   : t.rejected,
-                              colorString: AppColors.background,
+                              colorString: AppColors.darkBlue,
                               fontNum: 14,
                             ),
                           ],
@@ -269,7 +269,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ),
                       child: Icon(
                         Icons.mark_email_read_rounded,
-                        color: AppColors.background,
+                        color: AppColors.darkBlue,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -343,7 +343,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     ),
     child: Row(
       children: [
-        Icon(icon, size: 19, color: AppColors.background),
+        Icon(icon, size: 19, color: AppColors.darkBlue),
         const SizedBox(width: 9),
         SharedText(
           title: '$label: ',

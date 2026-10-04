@@ -96,294 +96,318 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: RefreshIndicator(
         color: AppColors.gold,
-        onRefresh: () async { await Future.wait([loadUserData(), loadProfileStats()]); },
+        onRefresh: () async {
+          await Future.wait([loadUserData(), loadProfileStats()]);
+        },
         child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Container(
-        color: AppColors.background,
-        child: ClipPath(
-          clipper: CurvedTopClipper(),
-
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Container(
-            color: AppColors.primaryColor,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height: 70),
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.gold, width: 3.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.background.withValues(
-                                alpha: 0.5,
-                              ),
-                              spreadRadius: 2,
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const CircleAvatar(
-                          radius: 65.0,
-                          backgroundImage: AssetImage(
-                            'assets/images/loginProf.jpg',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 15),
-                  SharedText(
-                    title: name,
-                    colorString: const Color.fromARGB(255, 3, 11, 66),
-                    fontNum: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  const SizedBox(height: 5),
-                  SharedText(
-                    title: '@$userName',
-                    colorString: const Color.fromARGB(255, 3, 31, 129),
-                    fontNum: 16,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 5,
-                    children: [
-                      Icon(Icons.auto_awesome, size: 22, color: AppColors.gold),
+            color: AppColors.background,
+            child: ClipPath(
+              clipper: CurvedTopClipper(),
 
+              child: Container(
+                color: AppColors.primaryColor,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 70),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.gold,
+                                width: 3.0,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.background.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                  spreadRadius: 2,
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: const CircleAvatar(
+                              radius: 65.0,
+                              backgroundImage: AssetImage(
+                                'assets/images/loginProf.jpg',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
                       SharedText(
-                        title: t.profileMessage,
-                        colorString: Colors.grey[700]!,
+                        title: name,
+                        colorString: AppColors.darkBlue,
+                        fontNum: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 5),
+                      SharedText(
+                        title: '@$userName',
+                        colorString: AppColors.darkBlue,
                         fontNum: 16,
                         textAlign: TextAlign.center,
                       ),
-                      Icon(Icons.auto_awesome, size: 22, color: AppColors.gold),
-                    ],
-                  ),
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 5,
+                        children: [
+                          Icon(
+                            Icons.auto_awesome,
+                            size: 22,
+                            color: AppColors.gold,
+                          ),
 
-                  Container(
-                    margin: const EdgeInsetsDirectional.all(15),
-                    padding: const EdgeInsetsDirectional.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.secondaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: AppColors.gold, width: 1),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          spacing: 2,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.iconBackground,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Icon(
-                                Icons.chat,
-                                color: AppColors.background,
-                                size: 30,
-                              ),
-                            ),
-                            SharedText(
-                              title: receivedMessagesCount.toString(),
-                              colorString: Colors.black,
-                              fontNum: 14,
-                            ),
-                            SharedText(
-                              title: t.messages,
-                              colorString: Colors.black,
-                              fontNum: 14,
-                            ),
-                          ],
-                        ),
-                        Container(width: 2, height: 70, color: AppColors.gold),
-
-                        Column(
-                          spacing: 2,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.iconBackground,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: AppColors.background,
-                                size: 30,
-                              ),
-                            ),
-                            SharedText(
-                              title: favoritesCount.toString(),
-                              colorString: Colors.black,
-                              fontNum: 14,
-                            ),
-                            SharedText(
-                              title: t.favorites,
-                              colorString: Colors.black,
-                              fontNum: 14,
-                            ),
-                          ],
-                        ),
-                        Container(width: 2, height: 70, color: AppColors.gold),
-                        Column(
-                          spacing: 2,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.iconBackground,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Icon(
-                                Icons.calendar_month_outlined,
-                                color: AppColors.background,
-                                size: 30,
-                              ),
-                            ),
-                            SharedText(
-                              title: joinDate != null
-                                  ? '${joinDate!.day}/${joinDate!.month}/${joinDate!.year}'
-                                  : 'Unknown',
-                              colorString: Colors.black,
-                              fontNum: 14,
-                            ),
-                            SharedText(
-                              title: t.datesjoin,
-                              colorString: Colors.black,
-                              fontNum: 14,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    margin: const EdgeInsetsDirectional.only(
-                      bottom: 15,
-                      start: 20,
-                      end: 20,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.auto_awesome,
-                          size: 22,
-                          color: AppColors.gold,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.77,
-                          height: 1.5,
-                          color: AppColors.gold,
-                        ),
-                        Icon(
-                          Icons.auto_awesome,
-                          size: 22,
-                          color: AppColors.gold,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    margin: EdgeInsetsDirectional.only(
-                      start: 15,
-                      bottom: 10,
-                      end: 15,
-                    ),
-                    padding: EdgeInsetsDirectional.only(
-                      start: 10,
-                      top: 15,
-                      bottom: 10,
-                      end: 15,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 184, 218, 245),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color.fromARGB(255, 73, 121, 169),
-                          blurRadius: 5,
-                        ),
-                      ],
-                      image: DecorationImage(
-                        image: AssetImage(
-                          'assets/images/messagesBackground.jpg',
-                        ),
-                        fit: BoxFit.fill,
+                          SharedText(
+                            title: t.profileMessage,
+                            colorString: AppColors.secondaryText,
+                            fontNum: 16,
+                            textAlign: TextAlign.center,
+                          ),
+                          Icon(
+                            Icons.auto_awesome,
+                            size: 22,
+                            color: AppColors.gold,
+                          ),
+                        ],
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      spacing: 15,
-                      children: [
-                        Image(
-                          image: AssetImage('assets/images/message.png'),
-                          width: 40,
-                          height: 40,
+
+                      Container(
+                        margin: const EdgeInsetsDirectional.all(15),
+                        padding: const EdgeInsetsDirectional.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.gold, width: 1),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            SharedText(
-                              title: t.profileTitle,
-                              colorString: Colors.black,
-                              fontNum: 13,
+                            Column(
+                              spacing: 2,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.iconBackground,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Icon(
+                                    Icons.chat,
+                                    color: AppColors.background,
+                                    size: 30,
+                                  ),
+                                ),
+                                SharedText(
+                                  title: receivedMessagesCount.toString(),
+                                  colorString: Colors.black,
+                                  fontNum: 14,
+                                ),
+                                SharedText(
+                                  title: t.messages,
+                                  colorString: Colors.black,
+                                  fontNum: 14,
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 5),
-                            SharedText(
-                              title: t.profileSubtitle,
-                              colorString: Colors.black,
-                              fontNum: 12,
+                            Container(
+                              width: 2,
+                              height: 70,
+                              color: AppColors.gold,
+                            ),
+
+                            Column(
+                              spacing: 2,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.iconBackground,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Icon(
+                                    Icons.favorite_border,
+                                    color: AppColors.background,
+                                    size: 30,
+                                  ),
+                                ),
+                                SharedText(
+                                  title: favoritesCount.toString(),
+                                  colorString: Colors.black,
+                                  fontNum: 14,
+                                ),
+                                SharedText(
+                                  title: t.favorites,
+                                  colorString: Colors.black,
+                                  fontNum: 14,
+                                ),
+                              ],
+                            ),
+                            Container(
+                              width: 2,
+                              height: 70,
+                              color: AppColors.gold,
+                            ),
+                            Column(
+                              spacing: 2,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.iconBackground,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Icon(
+                                    Icons.calendar_month_outlined,
+                                    color: AppColors.background,
+                                    size: 30,
+                                  ),
+                                ),
+                                SharedText(
+                                  title: joinDate != null
+                                      ? '${joinDate!.day}/${joinDate!.month}/${joinDate!.year}'
+                                      : 'Unknown',
+                                  colorString: Colors.black,
+                                  fontNum: 14,
+                                ),
+                                SharedText(
+                                  title: t.datesjoin,
+                                  colorString: Colors.black,
+                                  fontNum: 14,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.background,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: EdgeInsets.zero,
-                              alignment: Alignment.center,
+                      ),
+
+                      Container(
+                        margin: const EdgeInsetsDirectional.only(
+                          bottom: 15,
+                          start: 20,
+                          end: 20,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.auto_awesome,
+                              size: 22,
+                              color: AppColors.gold,
                             ),
-                            child: const Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                              size: 20,
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.77,
+                              height: 1.5,
+                              color: AppColors.gold,
                             ),
+                            Icon(
+                              Icons.auto_awesome,
+                              size: 22,
+                              color: AppColors.gold,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsetsDirectional.only(
+                          start: 15,
+                          bottom: 10,
+                          end: 15,
+                        ),
+                        padding: EdgeInsetsDirectional.only(
+                          start: 10,
+                          top: 15,
+                          bottom: 10,
+                          end: 15,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 184, 218, 245),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(255, 73, 121, 169),
+                              blurRadius: 5,
+                            ),
+                          ],
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/messagesBackground.jpg',
+                            ),
+                            fit: BoxFit.fill,
                           ),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          spacing: 15,
+                          children: [
+                            Image(
+                              image: AssetImage('assets/images/message.png'),
+                              width: 40,
+                              height: 40,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SharedText(
+                                  title: t.profileTitle,
+                                  colorString: AppColors.darkBlueBase,
+                                  fontNum: 13,
+                                ),
+                                SizedBox(height: 5),
+                                SharedText(
+                                  title: t.profileSubtitle,
+                                  colorString: AppColors.darkBlueBase,
+                                  fontNum: 12,
+                                ),
+                              ],
+                            ),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/random-user',
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.background,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  alignment: Alignment.center,
+                                ),
+                                child: const Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
         ),
-        ),
-      ),
       ),
     );
   }

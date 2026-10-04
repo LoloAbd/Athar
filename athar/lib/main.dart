@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +16,7 @@ import 'screens/schedule_message.dart';
 import 'screens/random_message.dart';
 import 'screens/random_person.dart';
 import 'screens/edit_profile.dart';
+import 'services/message_sync_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'app_locale.dart' as app_locale;
@@ -23,11 +26,21 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   if (!kIsWeb) {
     await GoogleSignIn.instance.initialize(
       serverClientId:
           '988731721904-7rb1s33r7veg1m71355bgndkc5c2snjk.apps.googleusercontent.com',
     );
+  }
+
+  final syncService = MessageSyncService();
+
+  try {
+    final count = await syncService.syncMessages();
+    print('Synced $count system messages.');
+  } catch (e) {
+    print('Message sync failed: $e');
   }
 
   runApp(const Main());

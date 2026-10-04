@@ -334,7 +334,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       label: SharedText(
                         title: t.login,
-                        colorString: Colors.black,
+                        colorString: AppColors.darkBlueBase,
                         fontNum: 18,
                         fontWeight: FontWeight.bold,
                       ),
