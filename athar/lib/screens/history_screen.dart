@@ -42,7 +42,7 @@ class HistoryScreenState extends State<HistoryScreen> {
         isLoading = false;
       });
     } catch (e) {
-      print('Error loading history: $e');
+      // print('Error loading history: $e');
       if (!mounted) return;
       setState(() {
         historyMessages = [];

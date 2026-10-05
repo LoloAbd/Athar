@@ -153,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
       SharedSnackBar.showError(context: context, message: message);
     } catch (e) {
       if (!mounted) return;
-
       SharedSnackBar.showError(context: context, message: t.faildlogin);
     }
   }
@@ -281,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
                                     _rememberMe = value ?? false;
                                   });
                                 },
-                                activeColor: AppColors.darkBlue,
+                                activeColor: AppColors.darkBlueBase,
                                 checkColor: Colors.white,
                                 side: BorderSide(
                                   color: AppColors.gold,
@@ -371,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
 
                             label: SharedText(
                               title: t.signUpWithGoogle,
-                              colorString: AppColors.darkBlue,
+                              colorString: AppColors.darkBlueBase, 
                               fontNum: 17,
                             ),
                           ),

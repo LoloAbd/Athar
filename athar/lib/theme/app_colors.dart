@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppColors {
+class AppColors { 
   AppColors._();
 
   /// Set by the app theme controller before rebuilding MaterialApp.
@@ -10,9 +10,11 @@ class AppColors {
   // Primary Colors
   // ==============================
 
-  static Color get primaryColor =>
-      isDark ? darkBlueBase : const Color.fromARGB(255, 232, 241, 250);
+  static Color get primaryColor => isDark ? darkBlueBase : lightBlueBase;
+  static Color get aboutImageColor => isDark ? lightBlueBase : darkBlueBase;
+
   static const Color darkBlueBase = Color.fromARGB(255, 17, 42, 69);
+  static const Color lightBlueBase = Color.fromARGB(255, 232, 241, 250);
 
   static Color get primaryColorTrans => isDark
       ? darkBlueBase.withValues(alpha: 0.75)

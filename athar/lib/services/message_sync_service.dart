@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 /// Downloads system messages from the remote JSON file
 /// and synchronizes them with Firestore.
-///
 /// System messages are stored separately from user_messages.
 class MessageSyncService {
   MessageSyncService({FirebaseFirestore? firestore, http.Client? client})

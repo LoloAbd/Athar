@@ -74,13 +74,13 @@ class AboutScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AppColors.aboutImageColor,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.darkBlue.withValues(alpha: 0.16),
-                    blurRadius: 18,
-                    offset: const Offset(0, 7),
+                    color: AppColors.aboutImageColor,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -96,8 +96,8 @@ class AboutScreen extends StatelessWidget {
                     title: isArabic
                         ? 'كلمات طيبة، وأثر يبقى.'
                         : 'Kind words. A lasting impact.',
-                    colorString: Colors.white,
-                    fontNum: 15,
+                    colorString: AppColors.primaryColor,
+                    fontNum: 20,
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -120,8 +120,8 @@ class AboutScreen extends StatelessWidget {
                   ),
                   child: ExpansionTile(
                     leading: CircleAvatar(
-                      backgroundColor: AppColors.gold.withValues(alpha: 0.22),
-                      child: Icon(section.icon, color: AppColors.background),
+                      backgroundColor: AppColors.aboutImageColor,
+                      child: Icon(section.icon, color: AppColors.primaryColor),
                     ),
                     title: SharedText(
                       title: section.title,

@@ -97,6 +97,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailRequired => 'Email is required';
 
   @override
+  String get emailAlreadyInUse => 'This email is already in use.';
+
+  @override
+  String get failedToCreateAccount => 'Failed to create account';
+
+  @override
   String get emptyFavorites => 'You don\'t have any favorite messages yet.';
 
   @override
@@ -445,7 +451,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverError => 'Something went wrong on the server.';
 
   @override
-  String get settings => 'Settings';
+  String get settings => 'Profile Settings';
 
   @override
   String get signUp => 'Register';
@@ -487,6 +493,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unfavorite => 'Remove from favorites';
+
+  @override
+  String get unucpturedErrorOccurred => 'An unexpected error occurred.';
 
   @override
   String get username => 'Username';
@@ -537,6 +546,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get writeYourRandomMessage => 'Write your message here...';
+
+  @override
+  String get weakerPassword => 'Password is too weak';
 
   @override
   String get year => 'year';

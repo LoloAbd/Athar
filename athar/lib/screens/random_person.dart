@@ -345,8 +345,8 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                   hintText: t.writeYourRandomMessage,
                   hintStyle: GoogleFonts.getFont(
                     isArabic ? 'Almarai' : 'Alike',
-                    textStyle: const TextStyle(
-                      color: Colors.grey,
+                    textStyle: TextStyle(
+                      color: AppColors.aboutImageColor.withValues(alpha: 0.75),
                       fontSize: 13,
                     ),
                   ),
@@ -360,7 +360,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                 title: '$length / $_maxChars',
                 colorString: length >= _maxChars
                     ? Colors.redAccent
-                    : AppColors.darkBlue.withValues(alpha: 0.45),
+                    : AppColors.aboutImageColor.withValues(alpha: 0.45),
                 fontNum: 11,
               ),
             ],
@@ -419,7 +419,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                       color: AppColors.darkBlue,
                     ),
                   )
-                : Icon(Icons.casino_rounded, color: AppColors.darkBlue),
+                : Icon(Icons.casino_rounded, color: AppColors.darkBlueBase),
 
             label: SharedText(
               title: _isFindingUser
@@ -427,7 +427,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
                   : hasUser
                   ? t.pickAnotherUser
                   : t.pickRandomUser,
-              colorString: AppColors.darkBlue,
+              colorString: AppColors.darkBlueBase,
               fontNum: 15,
               fontWeight: FontWeight.bold,
             ),
@@ -514,12 +514,12 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
             height: 54,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.darkBlue,
+              color: AppColors.aboutImageColor,
             ),
 
-            child: const Icon(
+            child: Icon(
               Icons.person_rounded,
-              color: Colors.white,
+              color: AppColors.primaryColor,
               size: 30,
             ),
           ),
@@ -528,7 +528,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
           SharedText(
             title: t.yourMessageWillBeSentTo,
-            colorString: AppColors.darkBlue.withValues(alpha: 0.65),
+            colorString: AppColors.darkBlueBase.withValues(alpha: 0.65),
             fontNum: 12,
             textAlign: TextAlign.center,
           ),
@@ -537,7 +537,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
           SharedText(
             title: '@$username',
-            colorString: AppColors.darkBlue,
+            colorString: AppColors.darkBlueBase,
             fontNum: 18,
             fontWeight: FontWeight.bold,
             textAlign: TextAlign.center,
@@ -572,7 +572,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
             children: [
               SharedText(
                 title: title,
-                colorString: AppColors.darkBlue,
+                colorString: AppColors.darkBlueBase,
                 fontNum: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -580,7 +580,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
               const SizedBox(height: 2),
               SharedText(
                 title: subtitle,
-                colorString: AppColors.darkBlue.withValues(alpha: 0.55),
+                colorString: AppColors.darkBlueBase.withValues(alpha: 0.55),
                 fontNum: 12,
               ),
             ],
@@ -639,7 +639,7 @@ class _RandomPersonPageState extends State<RandomPersonPage> {
 
           label: SharedText(
             title: _isSending ? t.sending : t.sendMessage,
-            colorString: Colors.white,
+            colorString: AppColors.primaryColor,
             fontNum: 16,
             fontWeight: FontWeight.bold,
           ),

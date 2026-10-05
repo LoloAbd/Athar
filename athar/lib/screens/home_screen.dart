@@ -141,7 +141,7 @@ class _HomepageState extends State<Homepage> {
         isLoadingMessage = false;
       });
     } catch (e) {
-      debugPrint('Error loading random message: $e');
+      // debugPrint('Error loading random message: $e');
 
       if (!mounted) return;
 
@@ -170,7 +170,7 @@ class _HomepageState extends State<Homepage> {
       });
       return;
     } catch (e) {
-      debugPrint('Error loading random message: $e');
+      // debugPrint('Error loading random message: $e');
       if (!mounted) return;
 
       setState(() {
@@ -195,7 +195,7 @@ class _HomepageState extends State<Homepage> {
   ) async {
     final String? messageId = message['messageId']?.toString();
     if (messageId == null || messageId.isEmpty) {
-      debugPrint('messageId is missing');
+      // debugPrint('messageId is missing');
       return;
     }
     try {
@@ -203,7 +203,7 @@ class _HomepageState extends State<Homepage> {
       if (!mounted) return;
       SharedSnackBar.showSuccess(context: context, message: t.favorite);
     } catch (e) {
-      debugPrint('Error adding favorite: $e');
+      // debugPrint('Error adding favorite: $e');
     }
   }
 
@@ -334,7 +334,7 @@ class _HomepageState extends State<Homepage> {
                 size: 30,
                 color: AppColors.darkBlue,
               ),
-              title: SharedText(
+              title: SharedText( 
                 title: t.settings,
                 colorString: AppColors.darkBlue,
                 fontNum: 16,
@@ -374,6 +374,7 @@ class _HomepageState extends State<Homepage> {
                 fontNum: 16,
               ),
               onTap: () async {
+                // TODO: Show a confirmation dialog before logging out
                 try {
                   await _authService.logout();
 
@@ -448,6 +449,7 @@ class _HomepageState extends State<Homepage> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
+               
                 StreamBuilder(
                   stream: _userMessages.getUnreadNotifications(),
                   builder: (context, snapshot) {
@@ -462,13 +464,27 @@ class _HomepageState extends State<Homepage> {
                             snapshot.data?.docs.where((doc) {
                               final data = doc.data();
                               if (data['isRead'] == true) return false;
-                              final rawTime = data['scheduledAt'];
-                              if (data['type'] == 'scheduled_user_message' &&
-                                  rawTime is! Timestamp) {
+                              final status = data['status']?.toString();
+                              if (status == 'rejected' ||
+                                  status == 'cancelled') {
                                 return false;
                               }
-                              return rawTime is! Timestamp ||
-                                  !now.isBefore(rawTime.toDate());
+
+                              final rawTime = data['scheduledAt'];
+                              final isScheduled =
+                                  status == 'scheduled' ||
+                                  data['type'] == 'self_scheduled' ||
+                                  rawTime != null;
+                              if (!isScheduled) return true;
+
+                              final scheduledAt = switch (rawTime) {
+                                Timestamp value => value.toDate(),
+                                DateTime value => value,
+                                String value => DateTime.tryParse(value),
+                                _ => null,
+                              };
+                              return scheduledAt != null &&
+                                  !now.isBefore(scheduledAt);
                             }).length ??
                             0;
                         return Stack(
@@ -485,7 +501,7 @@ class _HomepageState extends State<Homepage> {
                               ),
                               icon: Icon(
                                 Icons.inbox_outlined,
-                                size: 40,
+                                size: 35,
                                 color: AppColors.darkBlue,
                               ),
                             ),
@@ -523,6 +539,7 @@ class _HomepageState extends State<Homepage> {
                     );
                   },
                 ),
+              
               ],
             ),
           ),
@@ -707,8 +724,7 @@ class _HomepageState extends State<Homepage> {
                             shape: BoxShape.circle,
                           ),
 
-                          child: Expanded(
-                            child: ElevatedButton(
+                          child: ElevatedButton(
                               onPressed: todayMessage == null
                                   ? null
                                   : () async {
@@ -764,7 +780,6 @@ class _HomepageState extends State<Homepage> {
                                       color: AppColors.gold,
                                       size: 25,
                                     ),
-                            ),
                           ),
                         ),
                       ],

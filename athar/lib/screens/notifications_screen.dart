@@ -110,11 +110,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     : (data['message']?.toString() ?? '');
                 final read = data['isRead'] == true;
                 return Card(
-                  color: read ? AppColors.secondaryColor : AppColors.unread,
+                  color: AppColors.secondaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                     side: BorderSide(
-                      color: read ? AppColors.favBordar : AppColors.gold,
+                      color: read ? AppColors.gold : Colors.red,
+                      width: read ? 1 : 2,
                     ),
                   ),
                   margin: const EdgeInsets.only(bottom: 12),
@@ -171,28 +172,70 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: OutlinedButton(
+                                  child: OutlinedButton.icon(
                                     onPressed: () => _service.respondToMessage(
                                       doc.id,
                                       accept: false,
                                     ),
-                                    child: Text(t.reject),
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      size: 20,
+                                      color: Color(0xFFFF6B6B),
+                                    ),
+                                    label: SharedText(
+                                      title: t.reject,
+                                      colorString: Colors.white,
+                                      fontNum: 14,
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(48),
+                                      backgroundColor: const Color(
+                                        0xFFFF6B6B,
+                                      ).withOpacity(0.10),
+                                      side: BorderSide(
+                                        color: const Color(
+                                          0xFFFF6B6B,
+                                        ).withOpacity(0.6),
+                                        width: 1.2,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width: 10),
+
+                                const SizedBox(width: 12),
                                 Expanded(
-                                  child: ElevatedButton(
+                                  child: ElevatedButton.icon(
                                     onPressed: () => _service.respondToMessage(
                                       doc.id,
                                       accept: true,
                                     ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.background,
+                                    icon: const Icon(
+                                      Icons.check_rounded,
+                                      size: 20,
+                                      color: Colors.white,
                                     ),
-                                    child: SharedText(
+                                    label: SharedText(
                                       title: t.accept,
                                       colorString: Colors.white,
                                       fontNum: 14,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: const Size.fromHeight(48),
+                                      backgroundColor: AppColors.background,
+                                      elevation: 0,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
                                     ),
                                   ),
                                 ),

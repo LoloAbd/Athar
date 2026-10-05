@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:math';
-import 'package:flutter/foundation.dart';
 
 class GoogleAuthResult {
   final UserCredential? credential;
@@ -25,7 +24,6 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  // final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // ============================================================
   // SIGN UP (Email & Password)
@@ -54,15 +52,15 @@ class AuthService {
       return user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        // print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        // print('The account already exists for that email.');
       } else {
-        print('Firebase Auth Error: ${e.message}');
+        // print('Firebase Auth Error: ${e.message}');
       }
       rethrow;
     } catch (e) {
-      print('An unexpected error occurred: $e');
+      // print('An unexpected error occurred: $e');
       rethrow;
     }
   }
@@ -109,97 +107,108 @@ class AuthService {
 
   User? get currentUser => _auth.currentUser;
 
-  // ============================================================
-  // SIGN IN / SIGN UP WITH GOOGLE
-  // ============================================================
   Future<GoogleAuthResult> signInWithGoogle({required bool isSignUp}) async {
+    String step = 'start';
+
+    String fmt(String type, Object e, {String? code, String? msg}) {
+      return 'الخطوة: $step\n'
+          'النوع: $type\n'
+          '${code != null ? 'code: $code\n' : ''}'
+          '${msg != null ? 'message: $msg\n' : ''}'
+          'raw: $e';
+    }
+
     try {
-      UserCredential? webCredential;
-      String email;
-      AuthCredential? credential;
-      if (kIsWeb) {
-        webCredential = await _auth.signInWithPopup(GoogleAuthProvider());
-        email = webCredential.user?.email ?? '';
-      } else {
-        final googleUser = await _googleSignIn.authenticate();
-        final googleAuth = googleUser.authentication;
-        credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
-        email = googleUser.email;
-      }
+      step = '1-authenticate';
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
 
-      // فحص مسبق بالـ Firestore قبل أي تسجيل دخول فعلي
-      final existingQuery = await _firestore
-          .collection('user')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
-
-      final bool emailExists = existingQuery.docs.isNotEmpty;
-
-      // حالة: يحاول إنشاء حساب لكن الإيميل مستخدم مسبقًا
-      if (isSignUp && emailExists) {
-        if (kIsWeb) {
-          await _auth.signOut();
-        } else {
-          await _googleSignIn.signOut();
-        }
+      step = '2-get-idToken';
+      final googleAuth = googleUser.authentication;
+      if (googleAuth.idToken == null) {
         return GoogleAuthResult(
-          emailAlreadyExists: true,
-          // message: 'هذا البريد الإلكتروني مستخدم مسبقًا، الرجاء تسجيل الدخول.',
+          message:
+              'الخطوة: $step\nidToken = null\n'
+              'غالباً serverClientId ناقص أو مش Web client ID',
         );
       }
 
-      // حالة: يحاول تسجيل الدخول لكن ما في حساب أصلاً
-      if (!isSignUp && !emailExists) {
-        if (kIsWeb) {
-          await _auth.signOut();
-        } else {
-          await _googleSignIn.signOut();
-        }
-        return GoogleAuthResult(
-          accountNotFound: true,
-          // message: 'لا يوجد حساب بهذا البريد، الرجاء إنشاء حساب أولاً.',
-        );
-      }
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
 
-      // تسجيل الدخول الفعلي بـ Firebase Auth
-      final UserCredential userCredential =
-          webCredential ?? await _auth.signInWithCredential(credential!);
+      step = '3-firebase-signIn';
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
 
       final User? user = userCredential.user;
+      final bool isNewUser =
+          userCredential.additionalUserInfo?.isNewUser ?? false;
 
+      step = '4-check-signup-or-login';
+      if (isSignUp && !isNewUser) {
+        await _auth.signOut();
+        await _googleSignIn.signOut();
+        return GoogleAuthResult(emailAlreadyExists: true);
+      }
+
+      if (!isSignUp && isNewUser) {
+        try {
+          await user?.delete();
+        } catch (_) {}
+        await _auth.signOut();
+        await _googleSignIn.signOut();
+        return GoogleAuthResult(accountNotFound: true);
+      }
+
+      step = '5-firestore-write';
       if (user != null) {
-        // لو فشلت هاي، رح ترمي Exception وتنلقط بالـ catch تحت
         await _createOrUpdateGoogleUser(user);
       }
 
       return GoogleAuthResult(credential: userCredential);
-    } on FirebaseAuthException catch (e, stackTrace) {
-      print('Google Firebase Error: ${e.code}');
-      print('Message: ${e.message}');
-      print(stackTrace);
-
-      if (e.code == 'account-exists-with-different-credential') {
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
         return GoogleAuthResult(
-          emailAlreadyExists: true,
-          // message: 'هذا البريد مرتبط بطريقة تسجيل دخول مختلفة.',
+          message: fmt(
+            'GoogleSignInException',
+            e,
+            code: 'canceled',
+            msg: e.description,
+          ),
         );
       }
-
       return GoogleAuthResult(
-        message: 'حدث خطأ أثناء تسجيل الدخول: ${e.message}',
+        message: fmt(
+          'GoogleSignInException',
+          e,
+          code: e.code.name,
+          msg: e.description,
+        ),
       );
-    } catch (e, stackTrace) {
-      print('Google Sign-In Error: $e');
-      print(stackTrace);
-      return GoogleAuthResult(message: 'حدث خطأ غير متوقع، حاول مرة أخرى.');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        return GoogleAuthResult(emailAlreadyExists: true);
+      }
+      return GoogleAuthResult(
+        message: fmt('FirebaseAuthException', e, code: e.code, msg: e.message),
+      );
+    } on FirebaseException catch (e) {
+      return GoogleAuthResult(
+        message: fmt(
+          'FirebaseException (${e.plugin})',
+          e,
+          code: e.code,
+          msg: e.message,
+        ),
+      );
+    } catch (e) {
+      return GoogleAuthResult(message: fmt(e.runtimeType.toString(), e));
     }
   }
 
   // ============================================================
   // إنشاء أو تحديث مستند المستخدم بعد تسجيل الدخول بجوجل
-  // ملاحظة: هاي الدالة لا تبلع الأخطاء — تترك أي Exception يوصل
-  // للـ catch العام بدالة signInWithGoogle
   // ============================================================
   Future<void> _createOrUpdateGoogleUser(User user) async {
     final userRef = _firestore.collection('user').doc(user.uid);
@@ -215,7 +224,6 @@ class AuthService {
         'name': name,
         'username': username,
         'email': email,
-        // 'photoUrl': user.photoURL,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -258,20 +266,7 @@ class AuthService {
   }
 
   // ============================================================
-  // GET USER PHOTO URL
-  // رابط صورة البروفايل من Firestore، وإذا مش موجود بيرجع صورة
-  // حساب Firebase Auth (مثلاً صورة جوجل)
-  // ============================================================
-  /* Future<String?> getUserPhotoUrl() async {
-    final userData = await getUserData();
-    final String? photoUrl = userData?['photoUrl'] as String?;
-    if (photoUrl != null && photoUrl.isNotEmpty) return photoUrl;
-    return _auth.currentUser?.photoURL;
-  }*/
-
-  // ============================================================
   // USER DATA STREAM
-  // مفيد لصفحة البروفايل والـ Drawer حتى تتحدث تلقائياً بعد التعديل
   // ============================================================
   Stream<Map<String, dynamic>?> userDataStream() {
     final user = _auth.currentUser;

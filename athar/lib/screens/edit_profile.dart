@@ -91,7 +91,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      debugPrint('Error updating profile: $e');
+      // debugPrint('Error updating profile: $e');
 
       if (!mounted) return;
 
@@ -127,7 +127,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: SharedText(
           title: t.editProfile,
           colorString: Colors.white,
-          fontNum: 19,
+          fontNum: 22,
           fontWeight: FontWeight.bold,
         ),
 
@@ -232,28 +232,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             const SizedBox(height: 20),
 
                             // Username
-                            SharedTextFormField(
+                            SharedTextFormField( 
                               controller: _usernameController,
                               labelText: t.username,
                               hintText: t.usernameHint,
                               iconReq: Icons.alternate_email_rounded,
                               validator: (value) {
                                 final text = value?.trim() ?? '';
-
                                 if (text.isEmpty) {
                                   return t.usernameRequired;
                                 }
-
                                 if (text.length < 3) {
                                   return t.usernameTooShort;
                                 }
-
                                 if (!RegExp(
                                   r'^[a-zA-Z][a-zA-Z0-9_.]*$',
                                 ).hasMatch(text)) {
                                   return t.invalidUsername;
                                 }
-
                                 return null;
                               },
                             ),

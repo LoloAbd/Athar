@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'package:athar/services/auth_service.dart';
@@ -43,7 +41,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
         isLoading = false;
       });
     } catch (e) {
-      print('Error loading favorites: $e');
+      // print('Error loading favorites: $e');
       if (!mounted) return;
 
       setState(() {
@@ -99,13 +97,12 @@ class FavoritesScreenState extends State<FavoritesScreen> {
     final String? messageId = message['messageId']?.toString();
 
     if (messageId == null || messageId.isEmpty) {
-      debugPrint('messageId is missing');
+      // debugPrint('messageId is missing');
       return;
     }
 
     try {
       await _authService.removeFavoriteMessage(messageId);
-
       if (!mounted) return;
 
       setState(() {
@@ -118,7 +115,7 @@ class FavoritesScreenState extends State<FavoritesScreen> {
         message: t.messageRemovedFromFavorites,
       );
     } catch (e) {
-      debugPrint('Error removing favorite: $e');
+      // debugPrint('Error removing favorite: $e');
     }
   }
 
@@ -454,41 +451,39 @@ class FavoritesScreenState extends State<FavoritesScreen> {
             Align(
               alignment: AlignmentGeometry.centerStart,
 
-              child: Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    removeFavorite(message, t);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.secondaryColor,
-                    elevation: 3,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 10,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              child: ElevatedButton(
+                onPressed: () {
+                  removeFavorite(message, t);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.secondaryColor,
+                  elevation: 3,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.favorite_rounded,
-                        color: AppColors.gold,
-                        size: 20,
-                      ),
-
-                      const SizedBox(width: 6),
-
-                      SharedText(
-                        title: t.unfavorite,
-                        colorString: AppColors.darkBlue,
-                        fontNum: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.favorite_rounded,
+                      color: AppColors.gold,
+                      size: 20,
+                    ),
+
+                    const SizedBox(width: 6),
+
+                    SharedText(
+                      title: t.unfavorite,
+                      colorString: AppColors.darkBlue,
+                      fontNum: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -536,7 +531,9 @@ class FavoritesScreenState extends State<FavoritesScreen> {
           children: [
             SharedText(
               title: title,
-              colorString: isSelected ? Colors.white : AppColors.darkBlue,
+              colorString: isSelected
+                  ? AppColors.primaryColor
+                  : AppColors.darkBlue,
               fontNum: 13,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
               textAlign: TextAlign.center,

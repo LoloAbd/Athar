@@ -151,9 +151,8 @@ class RandomMessageService {
       .collection('user').doc(currentUserId).collection('notifications')
       .orderBy('createdAt', descending: true).snapshots();
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUnreadNotifications() => _firestore
-      .collection('user').doc(currentUserId).collection('notifications')
-      .where('isRead', isEqualTo: false).snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUnreadNotifications() =>
+      _messages.where('receiverId', isEqualTo: currentUserId).snapshots();
 
   Future<void> markRead(String messageId) async {
     final uid = currentUserId;

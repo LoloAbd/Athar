@@ -373,14 +373,14 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
               children: [
                 SharedText(
                   title: t.surpriseIsWaiting,
-                  colorString: AppColors.darkBlue,
+                  colorString: AppColors.darkBlueBase, 
                   fontNum: 14,
                   fontWeight: FontWeight.bold,
                 ),
                 const SizedBox(height: 5),
                 SharedText(
                   title: t.deliveryTimeDescription,
-                  colorString: AppColors.darkBlue.withValues(alpha: 0.60),
+                  colorString: AppColors.darkBlueBase.withValues(alpha: 0.60),
                   fontNum: 12,
                 ),
               ],
@@ -439,7 +439,7 @@ class _RandomMessagePageState extends State<RandomMessagePage> {
             title: _isSending ? t.sending : t.sendToTheFuture,
             fontNum: 16,
             fontWeight: FontWeight.bold,
-            colorString: Colors.white,
+            colorString: AppColors.primaryColor,
           ),
         ),
       ),

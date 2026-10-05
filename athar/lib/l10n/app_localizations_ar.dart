@@ -97,6 +97,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailRequired => 'البريد الإلكتروني مطلوب';
 
   @override
+  String get emailAlreadyInUse => 'هذا البريد الإلكتروني مستخدم مسبقًا';
+
+  @override
+  String get failedToCreateAccount => 'فشل إنشاء الحساب';
+
+  @override
   String get emptyFavorites => 'لا توجد لديك رسائل مفضلة حتى الآن.';
 
   @override
@@ -444,7 +450,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get serverError => 'حدث خطأ في الخادم.';
 
   @override
-  String get settings => 'الإعدادات';
+  String get settings => 'إعدادات الملف الشخصي';
 
   @override
   String get signUp => 'إنشاء حساب';
@@ -487,6 +493,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unfavorite => 'إزالة من المفضلة';
+
+  @override
+  String get unucpturedErrorOccurred => 'حدث خطأ غير متوقع.';
 
   @override
   String get username => 'اسم المستخدم';
@@ -536,6 +545,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get writeYourRandomMessage => 'اكتب رسالتك هنا...';
+
+  @override
+  String get weakerPassword => 'كلمة المرور ضعيفة جدًا';
 
   @override
   String get year => 'سنة';

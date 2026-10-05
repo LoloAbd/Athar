@@ -50,9 +50,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
     try {
       await _authService.sendPasswordResetEmail(email: email);
-
       if (!mounted) return;
-
       setState(() {
         _isLoading = false;
       });
@@ -63,19 +61,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-
       setState(() {
         _isLoading = false;
       });
-
       _showErrorMessage(e);
     } catch (e) {
       if (!mounted) return;
-
       setState(() {
         _isLoading = false;
       });
-
       SharedSnackBar.showError(context: context, message: t.passwordResetError);
     }
   }
@@ -193,7 +187,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     SharedText(
                       title: t.forgotPassword,
                       colorString: AppColors.darkBlue,
-                      fontNum: 40,
+                      fontNum: 35,
                       fontWeight: FontWeight.bold,
                     ),
 
@@ -206,6 +200,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         colorString: AppColors.darkBlue,
                         fontNum: 15,
                         fontWeight: FontWeight.bold,
+                        textAlign: TextAlign.center,
                       ),
                     ),
 

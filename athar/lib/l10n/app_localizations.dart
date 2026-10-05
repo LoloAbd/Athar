@@ -266,6 +266,18 @@ abstract class AppLocalizations {
   /// **'Email is required'**
   String get emailRequired;
 
+  /// No description provided for @emailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already in use.'**
+  String get emailAlreadyInUse;
+
+  /// No description provided for @failedToCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create account'**
+  String get failedToCreateAccount;
+
   /// No description provided for @emptyFavorites.
   ///
   /// In en, this message translates to:
@@ -941,7 +953,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
-  /// **'Settings'**
+  /// **'Profile Settings'**
   String get settings;
 
   /// No description provided for @signUp.
@@ -1021,6 +1033,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove from favorites'**
   String get unfavorite;
+
+  /// No description provided for @unucpturedErrorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred.'**
+  String get unucpturedErrorOccurred;
 
   /// No description provided for @username.
   ///
@@ -1111,6 +1129,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write your message here...'**
   String get writeYourRandomMessage;
+
+  /// No description provided for @weakerPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak'**
+  String get weakerPassword;
 
   /// No description provided for @year.
   ///

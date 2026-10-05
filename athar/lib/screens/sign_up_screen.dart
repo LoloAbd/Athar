@@ -4,6 +4,7 @@ import 'package:athar/services/auth_service.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/shared_text.dart';
 import '../widgets/text_form_field.dart';
+import '../widgets/shared_snack_bar.dart';
 import '../theme/app_colors.dart';
 import '../app_locale.dart' as app_locale;
 
@@ -32,7 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isPasswordVisible = false;
   bool _isLoading = false;
 
-  Future<void> _handleGoogleSignUp() async {
+  Future<void> _handleGoogleSignUp(AppLocalizations t) async {
     setState(() {
       _isLoading = true;
     });
@@ -50,18 +51,21 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.pushReplacementNamed(context, '/home');
     } else if (result.emailAlreadyExists) {
       // الإيميل مستخدم مسبقًا -> حوّله لصفحة تسجيل الدخول
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message ?? 'هذا البريد مستخدم مسبقًا')),
+      SharedSnackBar.showError(
+        context: context,
+        message: result.message ?? t.emailAlreadyInUse,
       );
       Navigator.pushReplacementNamed(context, '/login');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message ?? 'فشل إنشاء الحساب')),
+      // فشل إنشاء الحساب
+      SharedSnackBar.showError(
+        context: context,
+        message: result.message ?? t.failedToCreateAccount,
       );
     }
   }
 
-  Future<void> _handleEmailSignUp() async {
+  Future<void> _handleEmailSignUp(AppLocalizations t) async {
     setState(() {
       _isLoading = true;
     });
@@ -83,9 +87,10 @@ class _SignUpPageState extends State<SignUpPage> {
       if (user != null) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('فشل إنشاء الحساب')));
+        SharedSnackBar.showError(
+          context: context,
+          message: t.failedToCreateAccount,
+        );
       }
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -96,30 +101,29 @@ class _SignUpPageState extends State<SignUpPage> {
       String message;
       switch (e.code) {
         case 'weak-password':
-          message = 'كلمة المرور ضعيفة جدًا';
+          message = t.weakerPassword;
           break;
         case 'email-already-in-use':
-          message = 'هذا البريد الإلكتروني مستخدم مسبقًا';
+          message = t.emailAlreadyInUse;
           break;
         case 'invalid-email':
-          message = 'صيغة البريد الإلكتروني غير صحيحة';
+          message = t.invalidEmail;
           break;
         default:
-          message = e.message ?? 'حدث خطأ أثناء إنشاء الحساب';
+          message = e.message ?? t.failedToCreateAccount;
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      SharedSnackBar.showError(context: context, message: message);
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('حدث خطأ غير متوقع: $e')));
+      SharedSnackBar.showError(
+        context: context,
+        message: t.unucpturedErrorOccurred,
+      );
     }
   }
 
@@ -259,9 +263,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
 
                     SizedBox(height: 7.5),
-                    
+
                     ElevatedButton.icon(
-                      onPressed: _handleEmailSignUp,
+                      onPressed: () => _handleEmailSignUp(t),
                       style: ElevatedButton.styleFrom(
                         elevation: 7,
                         minimumSize: Size(70, 40),
@@ -297,7 +301,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     _isLoading
                         ? CircularProgressIndicator(color: AppColors.gold)
                         : ElevatedButton.icon(
-                            onPressed: _handleGoogleSignUp,
+                            onPressed: () => _handleGoogleSignUp(t),
                             style: ElevatedButton.styleFrom(
                               elevation: 7,
                               minimumSize: Size(70, 40),
@@ -314,7 +318,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                             label: SharedText(
                               title: t.signUpWithGoogle,
-                              colorString: AppColors.darkBlue,
+                              colorString: AppColors.darkBlueBase,
                               fontNum: 17,
                             ),
                           ),
